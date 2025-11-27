@@ -1,0 +1,8 @@
+run = "cd backend && npm install && npm start"
+hidden = [".git", ".gitignore"]
+
+[languages.javascript]
+pattern = "**/*.{js,jsx,ts,tsx,json}"
+
+[languages.javascript.languageServer]
+start = "typescript-language-server --stdio"

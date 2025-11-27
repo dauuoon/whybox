@@ -9,7 +9,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // CORS 설정 (로컬 + Replit)
 const corsOrigins = NODE_ENV === 'production'
-  ? ['https://why-box.replit.dev'] // Replit 프로덕션 URL로 변경
+  ? [/^https:\/\/.*\.replit\.dev$/, /^https:\/\/.*\.replit\.com$/] // Replit 도메인 패턴
   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:5173', 'http://localhost:5174'];
 
 // Middleware
