@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+
+# 로컬 개발
+.env.local
+.env.*.local
+
+# 백엔드 데이터
+backend/database.db
+backend/node_modules/
