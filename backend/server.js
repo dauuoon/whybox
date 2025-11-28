@@ -4,30 +4,20 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// 직접 CORS 헤더 추가 (더 강력한 방식) - Replit 강제 재시작
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Preflight 요청 처리
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// CORS 설정 - 모든 출처 허용 (프로덕션 및 개발)
+// ⭐ CORS 설정 - 가장 먼저 처리
 app.use(cors({
-  origin: true, // 모든 출처 허용
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  credentials: true,
+  credentials: false,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Preflight 요청 명시적 처리
+app.options('*', cors());
+
+const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // CSP 헤더 제거 (개발 환경)
 app.use((req, res, next) => {
