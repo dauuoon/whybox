@@ -4,8 +4,7 @@ import Toast from './Toast'
 import WorkArea from './WorkArea'
 import LogoHeader from './LogoHeader'
 import { useAuth } from '../context/AuthContext'
-
-const API_BASE_URL = '/api'
+import { API_BASE_URL } from '../api/config'
 
 export default function Login() {
   const [id, setId] = useState('')
