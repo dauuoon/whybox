@@ -1,10 +1,14 @@
-run = "node server.js"
+run = "npm install && npm start"
 modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-24_05"
 
 [[ports]]
-express = true
-local = 3000
+localPort = 3000
 externalPort = 443
+expose = "public"
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "cd /home/runner/whybox/backend && npm install && npm start"]
