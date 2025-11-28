@@ -207,7 +207,6 @@ export default function Dashboard() {
   if (currentPage === 'history') {
     return (
       <ImageHistory
-        historyItems={historyItems}
         onDeleteItem={(id) => setHistoryItems(historyItems.filter(item => item.id !== id))}
         onBackToUpload={handleBackToUpload}
       />

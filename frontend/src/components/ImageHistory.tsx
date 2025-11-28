@@ -41,7 +41,7 @@ interface ImageHistoryProps {
   onBackToUpload: () => void
 }
 
-export default function ImageHistory({ historyItems, onDeleteItem, onBackToUpload }: ImageHistoryProps) {
+export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<ImageHistoryProps, 'historyItems'>) {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
