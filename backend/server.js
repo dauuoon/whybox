@@ -7,9 +7,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// CORS 설정 (로컬 + Replit)
+// CORS 설정 (로컬 + Replit + Vercel)
 const corsOrigins = NODE_ENV === 'production'
-  ? [/^https:\/\/.*\.replit\.dev$/, /^https:\/\/.*\.replit\.com$/] // Replit 도메인 패턴
+  ? [
+      /^https:\/\/.*\.replit\.dev$/,           // Replit 도메인
+      /^https:\/\/.*\.replit\.com$/,           // Replit 도메인
+      /^https:\/\/.*\.vercel\.app$/,           // Vercel 도메인
+      /^https:\/\/whybox.*\.vercel\.app$/      // 특정 Vercel 프로젝트
+    ]
   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:5173', 'http://localhost:5174'];
 
 // Middleware
