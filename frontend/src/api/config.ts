@@ -1,6 +1,6 @@
 // API 서버 URL 설정
-// 프록시를 통해 /api 경로로 요청
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
+// Replit 백엔드로 요청 (기본값)
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://whybox--dauuoon.replit.app/api'
 
 export const API_ENDPOINTS = {
   // Admin
