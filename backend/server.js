@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// 직접 CORS 헤더 추가 (더 강력한 방식)
+// 직접 CORS 헤더 추가 (더 강력한 방식) - Replit 강제 재시작
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
