@@ -1,4 +1,3 @@
-run = "npm install && npm start"
 modules = ["nodejs-20"]
 
 [nix]
@@ -7,8 +6,14 @@ channel = "stable-24_05"
 [[ports]]
 localPort = 3000
 externalPort = 443
-expose = "public"
 
-[deployment]
-deploymentTarget = "vm"
-run = ["bash", "-c", "cd /home/runner/whybox/backend && npm install && npm start"]
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+author = "user"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install && npm start"
