@@ -1,6 +1,6 @@
 // API 서버 URL 설정
-// Vite의 import.meta.env를 사용합니다
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+// 프록시를 통해 /api 경로로 요청
+export const API_BASE_URL = '/api'
 
 export const API_ENDPOINTS = {
   // Admin
