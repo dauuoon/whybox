@@ -1,0 +1,1164 @@
+.admin-panel-container {
+  width: 100%;
+  height: 100vh;
+  background: #1a1a1a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-divider {
+
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.admin-panel {
+  padding: 20px 40px 40px 40px;
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+}
+
+.admin-header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.account-management-button {
+  padding: 10px 20px;
+  background-color: #ffa500;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.account-management-button:hover {
+  background-color: #ff8c00;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #ff5252;
+}
+
+.admin-content {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  min-height: 700px;
+}
+
+/* 왼쪽: 디자인 목록 */
+.admin-list {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-list h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.design-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.design-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.design-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.design-item.selected {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: #ffa500;
+}
+
+.design-item-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.design-item-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.design-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.design-item-user {
+  font-size: 13px;
+  color: #ffa500;
+  margin: 0 0 4px 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.design-item-category {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.design-item-date {
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 4px 0;
+}
+
+.design-item-status {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 165, 0, 0.3);
+  color: #ffa500;
+}
+
+/* 오른쪽: 디자인 상세 */
+.admin-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+}
+
+.design-header-info {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 15px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.design-header-info h2 {
+  font-size: 18px;
+  margin: 0;
+  color: #fff;
+  flex: 1;
+}
+
+.status-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.status-label {
+  font-size: 12px;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.status-select {
+  padding: 6px 10px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid #ffa500;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.status-select:hover {
+  background: rgba(255, 165, 0, 0.2);
+}
+
+.status-select:focus {
+  background: rgba(255, 165, 0, 0.15);
+}
+
+.design-date {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0 0 4px 0;
+  text-align: left;
+}
+
+.design-notes {
+  font-size: 13px;
+  color: #ddd;
+  margin: 0 0 12px 0;
+  word-break: break-word;
+  text-align: left;
+}
+
+.design-detail-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.design-detail-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.admin-pins-section {
+  flex: 1;
+}
+
+.admin-pins-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.pin-instruction {
+  font-size: 13px;
+  color: #ffa500;
+  margin: 0 0 15px 0;
+  padding: 10px 12px;
+  background: rgba(255, 165, 0, 0.1);
+  border-left: 3px solid #ffa500;
+  border-radius: 4px;
+}
+
+/* 핀 추가 폼 */
+.add-pin-form {
+  display: none;
+  background: rgba(255, 165, 0, 0.1);
+  border: 2px solid #ffa500;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.add-pin-form.active {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pin-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pin-form-header h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.form-close-button {
+  background: none;
+  border: none;
+  color: #ffa500;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.form-close-button:hover {
+  color: #ff8c00;
+}
+
+.pin-location-info {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.pin-location-info .coord {
+  color: #ffa500;
+  font-weight: 600;
+}
+
+.pin-text-input-new {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.pin-text-input-new::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pin-text-input-new:focus {
+  outline: none;
+  border-color: #ffa500;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pin-form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-button {
+  flex: 1;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.cancel-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 질문 완료 버튼 */
+.complete-button-wrapper {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 165, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.complete-questions-button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.complete-questions-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 165, 0, 0.4);
+  background: linear-gradient(135deg, #ff8c00, #ff7a00);
+}
+
+.complete-questions-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+}
+
+.button-hint {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  margin: 0;
+  font-style: italic;
+}
+
+/* 상태 배지 */
+.status-badge {
+  padding: 8px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.status-badge.completed {
+  background: rgba(76, 175, 80, 0.15);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.add-pin-button {
+  padding: 10px 15px;
+  background: #ffa500;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.add-pin-button:hover {
+  background: #ff8c00;
+}
+
+/* 핀 목록 */
+.pins-list {
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pin-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.pin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pin-position {
+  font-size: 11px;
+  color: #888;
+}
+
+.pin-delete-button {
+  padding: 4px 10px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.pin-delete-button:hover {
+  background: #ff5252;
+}
+
+.pin-text {
+  font-size: 14px;
+  color: #fff;
+  margin: 0 0 10px 0;
+  font-weight: 500;
+}
+
+.pin-comments {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.comment-item {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comment-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.comment-author {
+  font-size: 12px;
+  color: #ffa500;
+  margin: 0 0 4px 0;
+  font-weight: 600;
+}
+
+.comment-text {
+  font-size: 16px;
+  color: #ddd;
+  margin: 0 0 15px 0;
+  padding-left: 35px;
+}
+
+.comment-time {
+  font-size: 10px;
+  color: #888;
+  margin: 0;
+}
+
+/* Admin Feedback for Comments */
+.comment-admin-feedback {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.admin-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.admin-feedback-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffffa9;
+  text-transform: uppercase;
+}
+
+.admin-feedback-time {
+  font-size: 10px;
+  color: #888;
+}
+
+.admin-feedback-text {
+  font-size: 16px;
+  color: #ffffff;
+
+  line-height: 1.5;
+}
+
+.comment-edit-feedback-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  border-radius: 3px;
+  color: #ffa500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comment-edit-feedback-btn:hover {
+  background: rgba(255, 165, 0, 0.3);
+  border-color: #ffa500;
+}
+
+/* Comment Feedback Form */
+.comment-feedback-form {
+  background: rgba(100, 150, 200, 0.05);
+  border: 1px solid rgba(100, 150, 200, 0.2);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comment-feedback-input {
+  width: 100%;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(100, 150, 200, 0.3);
+  border-radius: 3px;
+  color: #ddd;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
+
+.comment-feedback-input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(100, 150, 200, 0.5);
+}
+
+.comment-feedback-input::placeholder {
+  color: #666;
+}
+
+.comment-feedback-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.comment-feedback-submit-btn,
+.comment-feedback-cancel-btn {
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.comment-feedback-submit-btn {
+  background: linear-gradient(135deg, rgba(100, 150, 200, 0.6), rgba(100, 150, 200, 0.4));
+  color: #fff;
+}
+
+.comment-feedback-submit-btn:hover {
+  background: linear-gradient(135deg, rgba(100, 150, 200, 0.8), rgba(100, 150, 200, 0.6));
+}
+
+.comment-feedback-cancel-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comment-feedback-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ddd;
+}
+
+.no-comments {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  font-style: italic;
+}
+
+.no-pins {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+.admin-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-empty p {
+  color: #888;
+  font-size: 16px;
+}
+
+/* 스크롤바 스타일 */
+.design-list::-webkit-scrollbar,
+.pins-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.design-list::-webkit-scrollbar-track,
+.pins-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.design-list::-webkit-scrollbar-thumb,
+.pins-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.design-list::-webkit-scrollbar-thumb:hover,
+.pins-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Feedback Section Styles */
+.feedback-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+}
+
+.feedback-section {
+  background: rgba(255, 165, 0, 0.05);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.feedback-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffa500;
+  margin: 0 0 12px 0;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feedback-input {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.feedback-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffa500;
+  box-shadow: 0 0 8px rgba(255, 165, 0, 0.2);
+}
+
+.feedback-input::placeholder {
+  color: #888;
+}
+
+.feedback-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.feedback-submit-button,
+.feedback-cancel-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feedback-submit-button {
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
+  color: #fff;
+}
+
+.feedback-submit-button:hover {
+  background: linear-gradient(135deg, #ff9300, #ff7a00);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.feedback-submit-button:active {
+  transform: scale(0.98);
+}
+
+.feedback-cancel-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feedback-cancel-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ddd;
+}
+
+.feedback-start-button {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.feedback-start-button:hover {
+  background: linear-gradient(135deg, #ff9300, #ff7a00);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.feedback-start-button:active {
+  transform: scale(0.98);
+}
+
+/* Final Feedback Display (Status 4) */
+.final-feedback-display {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+
+.final-feedback-text {
+  margin: 0;
+  font-size: 13px;
+  color: #e0e0e0;
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* Account Management Modal */
+.account-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.account-modal-content {
+  background: #222;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.account-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 165, 0, 0.1);
+}
+
+.account-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #fff;
+}
+
+.account-modal-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.account-modal-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.account-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 20px;
+}
+
+.account-tab {
+  flex: 1;
+  padding: 15px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.account-tab.active {
+  color: #ffa500;
+  border-bottom-color: #ffa500;
+}
+
+.account-tab:hover {
+  color: #fff;
+}
+
+.account-modal-body {
+  padding: 20px;
+}
+
+.account-form {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.account-form h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #ffa500;
+}
+
+.account-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.account-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffa500;
+  box-shadow: 0 0 8px rgba(255, 165, 0, 0.2);
+}
+
+.account-input::placeholder {
+  color: #666;
+}
+
+.account-create-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-create-button:hover {
+  background: linear-gradient(135deg, #ff9300, #ff7a00);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.account-list {
+  margin-top: 20px;
+}
+
+.account-list h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #ffa500;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.account-info {
+  flex: 1;
+}
+
+.account-username {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.account-email {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.account-detail {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.account-delete-button {
+  padding: 6px 16px;
+  background: #ff6b6b;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.account-delete-button:hover {
+  background: #ff5252;
+}
+
+.account-button-group {
+  display: flex;
+  gap: 8px;
+  margin-left: 10px;
+}
+
+.account-edit-button {
+  padding: 6px 16px;
+  background: #ffa500;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.account-edit-button:hover {
+  background: #ff9500;
+}
+
+.account-save-button {
+  padding: 8px 16px;
+  background: #52c41a;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.account-save-button:hover {
+  background: #45a917;
+}
+
+.account-cancel-button {
+  padding: 8px 16px;
+  background: #888;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.account-cancel-button:hover {
+  background: #777;
+}
+
+.account-edit-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-edit-form .account-input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+}
+
+.account-edit-form .account-input:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #ffa500;
+}
+

@@ -1,0 +1,46 @@
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FD895F;
+  color: #000000;
+  padding: 16px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+.toast p {
+  margin: 0;
+}
+
+.toast.toast-exit {
+  animation: slideDown 0.4s ease-in forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) translateY(100px);
+    opacity: 0;
+  }
+}

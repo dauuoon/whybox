@@ -1,0 +1,152 @@
+/* Divider */
+.design-notes-divider {
+  width: 100%;
+  height: 2px;
+  background-color: #3a3a3a;
+  margin-top: 20px;
+}
+
+.design-notes {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 25px 0px 25px;
+  overflow-y: auto;
+  gap: 27px;
+  /* justify-content: space-between; */
+}
+
+/* Text Input Section */
+.text-input-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-label {
+  font-size: 14px;
+  color: #ffffff;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  font-weight: 500;
+}
+
+.text-input {
+  width: 543px;
+  height: 300px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  font-size: 16px;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  color: #ffffff;
+  outline: none;
+  resize: none;
+  transition: all 0.3s ease;
+}
+
+.text-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text-input:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.text-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Controls Section */
+.controls-section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding-bottom: 25px;
+}
+
+/* Buttons Section */
+.buttons-section {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-button {
+  width: 140px;
+  height: 48px;
+  border: 0.5px solid #fd895f;
+  border-radius: 50px;
+  font-size: 16px;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prev-button {
+  background: none;
+  color: #fd895f;
+}
+
+.prev-button:hover:not(:disabled) {
+  background-color: rgba(253, 137, 95, 0.1);
+}
+
+.prev-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-button {
+  background-color: #fd895f;
+  color: #000000;
+}
+
+.submit-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.submit-button.loading {
+  background-color: #fd895f;
+}
+
+/* Spinner Loading */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  border-top-color: #000000;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1159px) {
+  .design-notes {
+    display: none;
+  }
+}

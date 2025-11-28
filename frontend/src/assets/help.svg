@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" data-name="레이어_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 34 34">
+  <!-- Generator: Adobe Illustrator 30.0.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 123)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        mask: url(#mask);
+      }
+
+      .st2, .st3 {
+        fill: #fff;
+      }
+
+      .st3 {
+        fill-opacity: .5;
+      }
+    </style>
+    <mask id="mask" x="8" y="9.42" width="18" height="16.5" maskUnits="userSpaceOnUse">
+      <g id="mask0_3781_109">
+        <path class="st2" d="M26,9.42H8v16.5h18V9.42Z"/>
+      </g>
+    </mask>
+  </defs>
+  <path class="st0" d="M17,0h0c9.39,0,17,7.61,17,17h0c0,9.39-7.61,17-17,17h0C7.61,34,0,26.39,0,17h0C0,7.61,7.61,0,17,0Z"/>
+  <g class="st1">
+    <g>
+      <path class="st3" d="M19.46,9.42h-5.11c-2.74,0-4.95,2.22-4.95,4.95,0,.71.59,1.3,1.29,1.3s1.29-.59,1.29-1.3c0-1.28,1.04-2.33,2.34-2.33h5.11c1.27,0,2.32,1.05,2.32,2.33v.21c0,1.09-.88,1.97-1.96,1.97h-3.17c-.61,0-1.11.5-1.11,1.11v2.22c0,.71.59,1.3,1.29,1.3s1.29-.59,1.29-1.3v-.71h1.67c2.53,0,4.57-2.05,4.57-4.59v-.21c0-2.73-2.21-4.95-4.93-4.95h.04Z"/>
+      <path class="st3" d="M16.81,22.29c-1.19,0-1.88.67-1.88,1.82s.69,1.8,1.88,1.8,1.92-.65,1.92-1.8-.69-1.82-1.92-1.82Z"/>
+    </g>
+  </g>
+</svg>
