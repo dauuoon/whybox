@@ -15,6 +15,10 @@ externalPort = 3000
 localPort = 5173
 externalPort = 5173
 
+[[ports]]
+localPort = 43133
+externalPort = 80
+
 [workflows]
 runButton = "Project"
 
@@ -54,3 +58,7 @@ outputType = "console"
 task = "shell.exec"
 args = "cd frontend && npm run dev -- --host 0.0.0.0"
 waitForPort = 5173
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "cd backend && npm start"]

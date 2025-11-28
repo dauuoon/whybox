@@ -460,7 +460,7 @@ app.use((req, res) => {
 });
 
 // ============ 서버 시작 ============
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ WHY BOX 백엔드 서버 실행 중`);
   console.log(`📡 포트: ${PORT}`);
   console.log(`🌍 환경: ${NODE_ENV}`);
