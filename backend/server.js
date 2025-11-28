@@ -5,46 +5,25 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS 설정 - Vercel과 로컬 모두 허용
-const corsOptions = {
-  origin: function (origin, callback) {
-    // 허용할 도메인 리스트
-    const allowedOrigins = [
-      'https://whybox.vercel.app',
-      'https://whybox-8e0hxz5wl-dawoons-projects.vercel.app',
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000'
-    ];
-    
-    // 요청에 origin이 없거나 허용된 도메인이면 통과
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      // 와일드카드로도 처리
-      callback(null, true);
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  credentials: false,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  maxAge: 3600
-};
-
-app.use(cors(corsOptions));
-
-// OPTIONS 요청 명시적 처리
+// CORS 설정
 app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'false');
+  
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Max-Age', '3600');
     return res.sendStatus(200);
   }
   next();
 });
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: false,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
