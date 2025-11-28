@@ -22,6 +22,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+  res.header('Access-Control-Max-Age', '3600');
   
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
@@ -274,6 +275,14 @@ app.patch('/api/designs/:designId/pins/:pinId/comments/:commentId/feedback', (re
 
 // ============ 인증 API ============
 
+// 관리자 로그인 - OPTIONS (preflight)
+app.options('/api/auth/admin/login', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+  res.sendStatus(200);
+});
+
 // 관리자 로그인
 app.post('/api/auth/admin/login', (req, res) => {
   const { username, password } = req.body;
@@ -287,6 +296,14 @@ app.post('/api/auth/admin/login', (req, res) => {
     success: true, 
     user: { id: admin.id, username: admin.username, email: admin.email, role: 'admin' }
   });
+});
+
+// 사용자 로그인 - OPTIONS (preflight)
+app.options('/api/auth/user/login', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+  res.sendStatus(200);
 });
 
 // 사용자 로그인
