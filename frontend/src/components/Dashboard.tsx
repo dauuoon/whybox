@@ -235,7 +235,7 @@ export default function Dashboard() {
           onClick={handleClick}
         >
           <div className="upload-icon">
-            <img src="/src/assets/image.png" alt="업로드 아이콘" />
+            <img src="/assets/image.png" alt="업로드 아이콘" />
           </div>
           <p className="upload-text">이미지를 드래그하거나 클릭하여 업로드하세요.</p>
           <input
@@ -250,7 +250,7 @@ export default function Dashboard() {
 
         <div className="dashboard-fab-buttons">
           <button className="fab-button list" onClick={handleGoToHistory} title="전송 내역">
-            <img src="/src/assets/btn_list.svg" alt="내역" />
+            <img src="/assets/btn_list.svg" alt="내역" />
           </button>
         </div>
       </div>

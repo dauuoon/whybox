@@ -11,7 +11,7 @@ export default function RightSidebar() {
       {/* Profile Section */}
       <div className="right-sidebar-profile">
         <img 
-          src={isLoggedIn ? 'src/assets/profile_a.png' : 'src/assets/profile_b.png'} 
+          src={isLoggedIn ? '/assets/profile_a.png' : '/assets/profile_b.png'} 
           alt="Profile" 
           className="right-sidebar-profile-img"
         />
@@ -71,7 +71,7 @@ export default function RightSidebar() {
           onClick={() => setShowFloatingMenu(!showFloatingMenu)}
           title="고객 센터"
         >
-          <img src="/src/assets/help.svg" alt="도움말" className="floating-btn-icon" />
+          <img src="/assets/help.svg" alt="도움말" className="floating-btn-icon" />
         </button>
 
         {showFloatingMenu && (

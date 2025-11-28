@@ -7,7 +7,7 @@ export default function LogoHeader() {
   return (
     <div className="logo-header">
       <div className="logo-header-left">
-        <img src="/src/assets/logo.png" alt="Why Box Logo" className="logo-header-logo" />
+        <img src="/assets/logo.png" alt="Why Box Logo" className="logo-header-logo" />
       </div>
       {isLoggedIn && (
         <button className="logo-header-logout" onClick={logout}>

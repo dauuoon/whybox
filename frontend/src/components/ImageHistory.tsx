@@ -182,7 +182,7 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
 
         <div className="history-fab-buttons">
           <button className="fab-button add active" onClick={onBackToUpload} title="이미지 추가">
-            <img src="/src/assets/btn_add.svg" alt="추가" />
+            <img src="/assets/btn_add.svg" alt="추가" />
           </button>
         </div>
       </div>

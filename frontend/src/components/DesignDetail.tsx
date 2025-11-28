@@ -280,7 +280,7 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
               }}
             >
               <img 
-                src={hoveredPinId === pin.id ? '/src/assets/pin_hover.svg' : '/src/assets/pin.svg'} 
+                src={hoveredPinId === pin.id ? '/assets/pin_hover.svg' : '/assets/pin.svg'} 
                 alt="핀" 
                 className="pin-icon" 
               />
@@ -385,7 +385,7 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
                       <div className="comment-spinner" />
                     </>
                   ) : (
-                    <img src="/src/assets/send.svg" alt="전송" />
+                    <img src="/assets/send.svg" alt="전송" />
                   )}
                 </button>
               </div>
@@ -408,7 +408,7 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
           {/* Back Button and Category */}
           <div className="design-detail-header">
             <button className="back-button" onClick={onBack}>
-              <img src="/src/assets/btn_back.svg" alt="뒤로" />
+              <img src="/assets/btn_back.svg" alt="뒤로" />
             </button>
             <h2 className="design-category">{historyItem.category}</h2>
             {historyItem.status === '최종피드백완료' && historyItem.feedback && (

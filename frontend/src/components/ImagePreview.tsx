@@ -63,7 +63,7 @@ export default function ImagePreview({
 
   const imageUrl = imageFile
     ? URL.createObjectURL(imageFile)
-    : '/src/assets/placeholder.png'
+    : '/assets/placeholder.png'
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category)
