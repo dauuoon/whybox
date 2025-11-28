@@ -1,1 +1,5 @@
 run = "cd backend && npm install && npm start"
+modules = ["nodejs-20", "web"]
+
+[nix]
+channel = "stable-25_05"
