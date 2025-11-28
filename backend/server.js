@@ -5,25 +5,29 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS 설정
+// CORS 설정 - 명시적으로 설정
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: false,
+  maxAge: 3600
+};
+
+// CORS 미들웨어 적용
+app.use(cors(corsOptions));
+
+// 모든 OPTIONS 요청에 대해 200 응답
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'false');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
   
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
 });
-
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  credentials: false,
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
