@@ -454,6 +454,11 @@ app.patch('/api/users/:id', (req, res) => {
   res.json({ success: true, user });
 });
 
+// ============ 404 핸들러 (마지막) ============
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.path });
+});
+
 // ============ 서버 시작 ============
 app.listen(PORT, () => {
   console.log(`✅ WHY BOX 백엔드 서버 실행 중`);
