@@ -15,8 +15,5 @@ export default defineConfig({
         secure: false
       }
     }
-  },
-  define: {
-    'import.meta.env.VITE_API_BASE_URL': JSON.stringify('/api')
   }
 })
