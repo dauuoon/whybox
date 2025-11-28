@@ -17,9 +17,9 @@ const corsOrigins = NODE_ENV === 'production'
     ]
   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:5173', 'http://localhost:5174'];
 
-// Middleware
+// CORS 설정 - 모든 출처 허용 (프로덕션)
 app.use(cors({
-  origin: corsOrigins,
+  origin: true, // 모든 출처 허용
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
