@@ -50,6 +50,24 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
 // ============ API 라우트 ============
 
+// 루트 경로 - 헬스 체크
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "WHY BOX 백엔드 서버 실행 중",
+    uptime: process.uptime(),
+    environment: NODE_ENV,
+    timestamp: new Date().toISOString(),
+    endpoints: [
+      "GET /api/health",
+      "GET /api/designs",
+      "POST /api/designs",
+      "POST /api/auth/admin/login",
+      "POST /api/auth/user/login",
+    ],
+  });
+});
+
 // 건강 확인
 app.get("/api/health", (req, res) => {
   res.json({
@@ -57,6 +75,12 @@ app.get("/api/health", (req, res) => {
     message: "WHY BOX 백엔드 서버 실행 중",
     environment: NODE_ENV,
     timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    server: {
+      port: PORT,
+      nodeVersion: process.version,
+      memory: process.memoryUsage(),
+    },
   });
 });
 

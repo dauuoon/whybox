@@ -1,0 +1,10 @@
+run = "node server.js"
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[[ports]]
+express = true
+local = 3000
+externalPort = 443
