@@ -1,15 +1,11 @@
-run = "cd backend && npm install && npm start"
-modules = ["nodejs-20", "web"]
+modules = ["nodejs-20"]
 
 [nix]
-channel = "stable-25_05"
-
-[agent]
-expertMode = true
+channel = "stable-24_05"
 
 [[ports]]
 localPort = 3000
-externalPort = 3000
+externalPort = 443
 expose = "public"
 
 [workflows]
@@ -17,24 +13,8 @@ runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Backend Server"
-
-[[workflows.workflow]]
-name = "Backend Server"
-author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "console"
+author = "user"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd backend && node server.js"
-
-[deployment]
-deploymentTarget = "vm"
-run = ["bash", "-c", "cd backend && node server.js"]
+args = "cd backend && npm install && npm start"

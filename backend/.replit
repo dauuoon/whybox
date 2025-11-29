@@ -6,6 +6,7 @@ channel = "stable-24_05"
 [[ports]]
 localPort = 3000
 externalPort = 443
+expose = "public"
 
 [workflows]
 runButton = "Project"
