@@ -17,6 +17,21 @@ const corsOptions = {
 // CORS 미들웨어 적용
 app.use(cors(corsOptions));
 
+// OPTIONS 요청을 가장 먼저 처리 (다른 미들웨어보다 먼저)
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Accept"
+  );
+  res.header("Access-Control-Max-Age", "3600");
+  res.sendStatus(200);
+});
+
 // 모든 OPTIONS 요청에 대해 200 응답
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
