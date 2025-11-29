@@ -8,8 +8,6 @@ localPort = 3000
 externalPort = 80
 expose = "public"
 
-run = "cd backend && npm install && npm start"
-
 [workflows]
 runButton = "Project"
 
@@ -20,3 +18,4 @@ author = "user"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd backend && npm install && npm start"
+
