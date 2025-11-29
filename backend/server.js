@@ -68,6 +68,22 @@ app.get("/", (req, res) => {
   });
 });
 
+// /api 루트 경로
+app.get("/api", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "WHY BOX API Server",
+    version: "1.0.0",
+    endpoints: {
+      health: "GET /api/health",
+      designs: "GET /api/designs",
+      createDesign: "POST /api/designs",
+      adminLogin: "POST /api/auth/admin/login",
+      userLogin: "POST /api/auth/user/login",
+    },
+  });
+});
+
 // 건강 확인
 app.get("/api/health", (req, res) => {
   res.json({
