@@ -60,15 +60,23 @@ app.get("/api/designs", async (req, res) => {
 
 app.post("/api/designs", async (req, res) => {
   try {
-    const { title, description, image_url } = req.body;
+    const { imageUrl, category, date, status, notes, userName, userId } = req.body;
+    if (!imageUrl) {
+      return res.status(400).json({ error: "Missing required fields: imageUrl" });
+    }
     const { data, error } = await supabase
       .from("designs")
-      .insert([{ title, description, image_url }])
+      .insert([{ 
+        title: category || "Untitled",
+        description: notes || "",
+        image_url: imageUrl
+      }])
       .select();
     if (error) throw error;
     res.status(201).json(data[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("POST /api/designs error:", err);
+    res.status(500).json({ error: err.message, details: err });
   }
 });
 
