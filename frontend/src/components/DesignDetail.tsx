@@ -100,10 +100,31 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
     text: pin.text,
     answer: pin.comments?.[0]?.text,
   })) || []
+  const refreshComments = async (pinId: string) => {
+    try {
+      // 백엔드에서 핀의 댓글 새로고침
+      const response = await fetch(`${API_BASE_URL}/pins`)
+      if (!response.ok) throw new Error(`API Error: ${response.status}`)
+      
+      const allPins = await response.json()
+      const updatedPin = allPins.find((p: any) => p.id === pinId)
+      
+      if (updatedPin) {
+        const pin = historyItem.pins?.find(p => p.id === pinId)
+        if (pin) {
+          pin.comments = updatedPin.comments || []
+        }
+      }
+    } catch (error) {
+      console.error('❌ 댓글 새로고침 실패:', error)
+    }
+  }
+
   const handleAddComment = async (pinId: string) => {
     if (!commentText.trim() || isSubmitting) return
 
     setIsSubmitting(true)
+    const tempCommentText = commentText
     
     try {
       // 로컬에서 먼저 업데이트 (UI 반응성)
@@ -113,7 +134,7 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
         const newComment = {
           id: Date.now().toString(),
           author: userInfo?.name || '사용자',
-          text: commentText,
+          text: tempCommentText,
           timestamp: new Date().toLocaleString('ko-KR'),
         }
         pin.comments.push(newComment)
@@ -121,13 +142,13 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
         
         // 백엔드에 답변 저장
         try {
-          console.log('📝 답변 저장 요청:', { designId: historyItem.id, pinId, text: commentText })
+          console.log('📝 답변 저장 요청:', { designId: historyItem.id, pinId, text: tempCommentText })
           const response = await fetch(`${API_BASE_URL}/designs/${historyItem.id}/pins/${pinId}/comments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               author: userInfo?.name || '사용자',
-              text: commentText,
+              text: tempCommentText,
               timestamp: new Date().toISOString()
             })
           })
@@ -138,14 +159,14 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
           
           const savedComment = await response.json()
           console.log('✅ 답변 저장 완료:', savedComment)
+          
+          // 백엔드에서 저장된 댓글 즉시 새로고침 (부모 새로고침 대기 안함)
+          await refreshComments(pinId)
         } catch (error) {
           console.error('❌ 답변 저장 실패:', error)
           alert('답변 저장에 실패했습니다.')
         }
       }
-
-      // 2초 대기
-      await new Promise(resolve => setTimeout(resolve, 2000))
     } catch (error) {
       console.error('Failed to add comment:', error)
     } finally {
