@@ -29,11 +29,7 @@ interface Pin {
     text: string
     timestamp?: string
     created_at?: string
-    adminReply?: {
-      id: string
-      text: string
-      timestamp: string
-    }
+    admin_feedback?: string
     adminFeedback?: {
       text: string
       timestamp: string
@@ -380,12 +376,16 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
                     <p className="comment-text">{comment.text}</p>
                     
                     {/* Admin Feedback on Comment */}
-                    {comment.adminFeedback && (
+                    {(comment.adminFeedback || comment.admin_feedback) && (
                       <div className="comment-admin-feedback-display">
                         <div className="admin-feedback-header">
                           <span className="admin-feedback-label">문장 정교화✨</span>
                         </div>
-                        <p className="admin-feedback-text">{comment.adminFeedback.text}</p>
+                        <p className="admin-feedback-text">
+                          {typeof comment.adminFeedback === 'string' 
+                            ? comment.adminFeedback 
+                            : comment.adminFeedback?.text || comment.admin_feedback}
+                        </p>
                       </div>
                     )}
                   </div>
