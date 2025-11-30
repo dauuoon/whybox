@@ -132,7 +132,7 @@ app.post("/api/designs", async (req, res) => {
 app.patch("/api/designs/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, image_url, feedback, status } = req.body;
+    const { title, description, image_url, feedback, status, finalFeedbackCompletedAt } = req.body;
     
     // 업데이트할 필드 구성
     const updateData = {};
@@ -150,7 +150,7 @@ app.patch("/api/designs/:id", async (req, res) => {
       } else if (status === '답변전송완료') {
         updateData.answer_submitted_at = dateStr;
       } else if (status === '최종피드백완료') {
-        updateData.final_feedback_completed_at = dateStr;
+        updateData.final_feedback_completed_at = finalFeedbackCompletedAt || dateStr;
       }
     }
     
@@ -162,6 +162,7 @@ app.patch("/api/designs/:id", async (req, res) => {
     if (error) throw error;
     res.json(data[0]);
   } catch (err) {
+    console.error("PATCH /api/designs/:id error:", err);
     res.status(500).json({ error: err.message });
   }
 });
