@@ -269,8 +269,6 @@ const admins = [
   { id: "admin001", username: "admin", password: "1720", email: "admin@whybox.com" },
 ];
 
-const users = [];
-
 app.post("/api/auth/admin/login", (req, res) => {
   const { username, password } = req.body;
   const admin = admins.find((a) => a.username === username && a.password === password);
@@ -278,11 +276,35 @@ app.post("/api/auth/admin/login", (req, res) => {
   res.json({ success: true, user: { id: admin.id, username: admin.username, email: admin.email, role: "admin" } });
 });
 
-app.post("/api/auth/user/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find((u) => u.username === username && u.password === password);
-  if (!user) return res.status(401).json({ error: "Invalid credentials" });
-  res.json({ success: true, user: { id: user.id, username: user.username, email: user.email, name: user.name, experience: user.experience, jobTitle: user.jobTitle, role: "user" } });
+app.post("/api/auth/user/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("username", username);
+    
+    if (error) throw error;
+    if (!data || data.length === 0) return res.status(401).json({ error: "Invalid credentials" });
+    
+    const user = data[0];
+    if (user.password !== password) return res.status(401).json({ error: "Invalid credentials" });
+    
+    res.json({ 
+      success: true, 
+      user: { 
+        id: user.id, 
+        username: user.username, 
+        email: user.email, 
+        name: user.name, 
+        experience: user.experience, 
+        jobTitle: user.jobTitle, 
+        role: "user" 
+      } 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ============ Admins API ============
@@ -337,56 +359,62 @@ app.delete("/api/admins/:id", (req, res) => {
 });
 
 // ============ Users API ============
-app.get("/api/users", (req, res) => {
-  res.json(users.map(u => ({ id: u.id, username: u.username, email: u.email, name: u.name, experience: u.experience, jobTitle: u.jobTitle, createdAt: u.createdAt })));
+app.get("/api/users", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("users").select("*");
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.post("/api/users", (req, res) => {
+app.post("/api/users", async (req, res) => {
   try {
     const { username, password, email, name, experience, jobTitle } = req.body;
     if (!username || !password) {
       return res.status(400).json({ error: "Missing required fields: username, password" });
     }
-    const newUser = {
-      id: `user${Date.now()}`,
-      username,
-      password,
-      email: email || `${username}@whybox.com`,
-      name: name || '',
-      experience: experience || '',
-      jobTitle: jobTitle || '',
-      createdAt: new Date().toISOString()
-    };
-    users.push(newUser);
-    res.status(201).json({ id: newUser.id, username: newUser.username, email: newUser.email, name: newUser.name, experience: newUser.experience, jobTitle: newUser.jobTitle, createdAt: newUser.createdAt });
+    const { data, error } = await supabase
+      .from("users")
+      .insert([{
+        id: `user${Date.now()}`,
+        username,
+        password,
+        email: email || `${username}@whybox.com`,
+        name: name || '',
+        experience: experience || '',
+        jobTitle: jobTitle || ''
+      }])
+      .select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.patch("/api/users/:id", (req, res) => {
+app.patch("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email, name, experience, jobTitle } = req.body;
-    const user = users.find(u => u.id === id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    if (username) user.username = username;
-    if (email) user.email = email;
-    if (name) user.name = name;
-    if (experience) user.experience = experience;
-    if (jobTitle) user.jobTitle = jobTitle;
-    res.json({ id: user.id, username: user.username, email: user.email, name: user.name, experience: user.experience, jobTitle: user.jobTitle });
+    const { data, error } = await supabase
+      .from("users")
+      .update({ username, email, name, experience, jobTitle })
+      .eq("id", id)
+      .select();
+    if (error) throw error;
+    res.json(data[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.delete("/api/users/:id", (req, res) => {
+app.delete("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const index = users.findIndex(u => u.id === id);
-    if (index === -1) return res.status(404).json({ error: "User not found" });
-    users.splice(index, 1);
+    const { error } = await supabase.from("users").delete().eq("id", id);
+    if (error) throw error;
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
