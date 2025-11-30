@@ -151,8 +151,17 @@ export default function Dashboard() {
             const savedItem = await response.json()
             newItem.id = savedItem.id // 서버에서 생성된 ID로 업데이트
             console.log('✅ 서버 저장 완료:', savedItem)
+            
+            // 토스트 알림 띄우기 (성공)
+            setToastMessage('이미지 전송 완료!')
+            setShowToast(true)
+            setTimeout(() => setShowToast(false), 2000)
           } catch (error) {
             console.error('❌ 디자인 저장 실패:', error)
+            // 토스트 알림 띄우기 (실패)
+            setToastMessage('이미지 전송 실패!')
+            setShowToast(true)
+            setTimeout(() => setShowToast(false), 2000)
           }
           
           // 히스토리에 추가
