@@ -316,13 +316,18 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     try {
       console.log('📝 최종 피드백 제출:', { designId: selectedDesignId, feedback: feedbackText })
       
+      // 현재 날짜 기록
+      const now = new Date()
+      const finalFeedbackCompletedAt = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+      
       // 최종 피드백 저장 (backend의 feedback 필드에 저장)
       const response = await fetch(`${API_BASE_URL}/designs/${selectedDesignId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           feedback: feedbackText,
-          status: '최종피드백완료'
+          status: '최종피드백완료',
+          finalFeedbackCompletedAt: finalFeedbackCompletedAt
         })
       })
 
@@ -337,6 +342,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       const updatedDesigns = designs.map(d => {
         if (d.id === selectedDesignId) {
           d.status = '최종피드백완료'
+          d.finalFeedbackCompletedAt = finalFeedbackCompletedAt
         }
         return d
       })

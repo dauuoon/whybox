@@ -132,10 +132,31 @@ app.post("/api/designs", async (req, res) => {
 app.patch("/api/designs/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, image_url } = req.body;
+    const { title, description, image_url, feedback, status } = req.body;
+    
+    // 업데이트할 필드 구성
+    const updateData: any = {};
+    if (title) updateData.title = title;
+    if (description) updateData.description = description;
+    if (image_url) updateData.image_url = image_url;
+    if (feedback) updateData.feedback = feedback;
+    if (status) {
+      updateData.status = status;
+      // 상태 변경 시 날짜 자동 저장
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+      if (status === '질문생성완료') {
+        updateData.question_created_at = dateStr;
+      } else if (status === '답변전송완료') {
+        updateData.answer_submitted_at = dateStr;
+      } else if (status === '최종피드백완료') {
+        updateData.final_feedback_completed_at = dateStr;
+      }
+    }
+    
     const { data, error } = await supabase
       .from("designs")
-      .update({ title, description, image_url })
+      .update(updateData)
       .eq("id", id)
       .select();
     if (error) throw error;
