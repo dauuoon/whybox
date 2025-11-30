@@ -238,24 +238,27 @@ app.delete("/api/admins/:id", (req, res) => {
 
 // ============ Users API ============
 app.get("/api/users", (req, res) => {
-  res.json(users.map(u => ({ id: u.id, username: u.username, email: u.email, createdAt: u.createdAt })));
+  res.json(users.map(u => ({ id: u.id, username: u.username, email: u.email, name: u.name, experience: u.experience, jobTitle: u.jobTitle, createdAt: u.createdAt })));
 });
 
 app.post("/api/users", (req, res) => {
   try {
-    const { username, password, email } = req.body;
-    if (!username || !password || !email) {
-      return res.status(400).json({ error: "Missing required fields" });
+    const { username, password, email, name, experience, jobTitle } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: "Missing required fields: username, password" });
     }
     const newUser = {
       id: `user${Date.now()}`,
       username,
       password,
-      email,
+      email: email || `${username}@whybox.com`,
+      name: name || '',
+      experience: experience || '',
+      jobTitle: jobTitle || '',
       createdAt: new Date().toISOString()
     };
     users.push(newUser);
-    res.status(201).json({ id: newUser.id, username: newUser.username, email: newUser.email, createdAt: newUser.createdAt });
+    res.status(201).json({ id: newUser.id, username: newUser.username, email: newUser.email, name: newUser.name, experience: newUser.experience, jobTitle: newUser.jobTitle, createdAt: newUser.createdAt });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -264,12 +267,15 @@ app.post("/api/users", (req, res) => {
 app.patch("/api/users/:id", (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email } = req.body;
+    const { username, email, name, experience, jobTitle } = req.body;
     const user = users.find(u => u.id === id);
     if (!user) return res.status(404).json({ error: "User not found" });
     if (username) user.username = username;
     if (email) user.email = email;
-    res.json({ id: user.id, username: user.username, email: user.email });
+    if (name) user.name = name;
+    if (experience) user.experience = experience;
+    if (jobTitle) user.jobTitle = jobTitle;
+    res.json({ id: user.id, username: user.username, email: user.email, name: user.name, experience: user.experience, jobTitle: user.jobTitle });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
