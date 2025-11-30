@@ -25,9 +25,10 @@ interface Pin {
   text: string
   comments?: Array<{
     id: string
-    author: string
+    author?: string
     text: string
-    timestamp: string
+    timestamp?: string
+    created_at?: string
     adminReply?: {
       id: string
       text: string
