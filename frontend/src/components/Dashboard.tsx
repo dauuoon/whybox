@@ -4,6 +4,7 @@ import LogoHeader from './LogoHeader'
 import ImagePreview from './ImagePreview'
 import DesignNotes from './DesignNotes'
 import ImageHistory from './ImageHistory'
+import Toast from './Toast'
 import { API_BASE_URL } from '../api/config'
 import { useRef, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
@@ -49,6 +50,8 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<Page>('upload')
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([])
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -263,6 +266,7 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+      {showToast && <Toast message={toastMessage} />}
     </WorkArea>
   )
 }
