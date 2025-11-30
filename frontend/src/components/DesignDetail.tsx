@@ -343,8 +343,8 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
                         backgroundImage: `url(${comment.author === (userInfo?.name || '사용자') ? 'src/assets/profile_a.png' : 'src/assets/pin_img.png'})`,
                       }} />
                       <div className="comment-info">
-                        <span className="comment-author-name">{comment.author}</span>
-                        <span className="comment-timestamp">{formatDate(comment.timestamp)}</span>
+                        <span className="comment-author-name">{comment.author || '사용자'}</span>
+                        <span className="comment-timestamp">{formatDate(comment.timestamp || comment.created_at || new Date().toISOString())}</span>
                       </div>
                       <div className="comment-menu-wrapper">
                         {historyItem.status === '질문생성완료' && (

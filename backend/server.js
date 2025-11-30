@@ -270,10 +270,12 @@ app.post("/api/designs/:designId/pins/:pinId/comments", async (req, res) => {
     const { text, author } = req.body;
     const { data, error } = await supabase
       .from("comments")
-      .insert([{ pin_id: parseInt(pinId), text, author }])
+      .insert([{ pin_id: parseInt(pinId), text }])
       .select();
     if (error) throw error;
-    res.status(201).json(data[0]);
+    // author 정보를 응답에 추가 (DB에는 저장하지 않음)
+    const result = { ...data[0], author };
+    res.status(201).json(result);
   } catch (err) {
     console.error("POST /api/designs/:designId/pins/:pinId/comments error:", err);
     res.status(500).json({ error: err.message });
