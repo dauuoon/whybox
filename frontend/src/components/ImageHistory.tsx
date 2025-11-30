@@ -53,6 +53,12 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
   // 백엔드에서 디자인 데이터 조회
   useEffect(() => {
     const fetchDesigns = async () => {
+      // DesignDetail이 열려있으면 새로고침하지 않음 (댓글이 초기화되는 것을 방지)
+      if (selectedItemId) {
+        console.log('🔍 DesignDetail이 열려있어 새로고침 건너뜀')
+        return
+      }
+      
       try {
         console.log('🔷 백엔드에서 디자인 조회 시작...')
         // 현재 사용자의 설계만 조회
@@ -77,7 +83,7 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
     const interval = setInterval(fetchDesigns, 10000)
     
     return () => clearInterval(interval)
-  }, [])
+  }, [selectedItemId, userInfo?.id])
 
   const handleDeleteItem = async (id: string) => {
     try {

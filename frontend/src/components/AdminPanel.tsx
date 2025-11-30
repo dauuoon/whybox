@@ -113,7 +113,12 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       
       const userRes = await fetch(`${API_BASE_URL}/users`)
       const userData = await userRes.json()
-      setUsers(userData)
+      // jobtitle을 jobTitle로 변환
+      const transformedUsers = userData.map((user: any) => ({
+        ...user,
+        jobTitle: user.jobtitle || user.jobTitle || ''
+      }))
+      setUsers(transformedUsers)
     } catch (error) {
       console.error('❌ 계정 조회 실패:', error)
     }
