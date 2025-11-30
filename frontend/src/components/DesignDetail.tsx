@@ -240,8 +240,15 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
       }
       const updatedItem = await response.json()
       console.log('✅ 상태 변경 완료:', updatedItem)
+      
+      // 2초 대기 후 목록으로 돌아가서 새로고침되도록
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      onBack()
     } catch (error) {
       console.error('❌ 상태 변경 실패:', error)
+      // 실패 시 상태 복원
+      historyItem.status = '질문생성완료'
+      delete historyItem.answerSubmittedAt
     }
     
     setIsSendingAnswers(false)

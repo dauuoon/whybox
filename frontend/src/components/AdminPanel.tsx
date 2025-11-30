@@ -89,9 +89,24 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         if (!response.ok) {
           throw new Error(`API Error: ${response.status}`)
         }
-        const data = await response.json()
-        console.log('✅ 관리자: 모든 디자인 조회 완료:', data)
-        setDesigns(data)
+        const newData = await response.json()
+        console.log('✅ 관리자: 모든 디자인 조회 완료:', newData)
+        
+        // 현재 선택된 디자인이 있으면, 새로고침된 데이터에서 로컬 수정사항 병합
+        setDesigns(prevDesigns => {
+          const mergedData = newData.map((newDesign: any) => {
+            // 현재 선택된 디자인이면 로컬 상태 유지
+            if (selectedDesignId === newDesign.id) {
+              const prevDesign = prevDesigns.find(d => d.id === newDesign.id)
+              if (prevDesign && prevDesign.pins) {
+                // 기존 로컬 상태 유지 (피드백 등)
+                return prevDesign
+              }
+            }
+            return newDesign
+          })
+          return mergedData
+        })
       } catch (error) {
         console.error('❌ 디자인 조회 실패:', error)
       } finally {
@@ -105,7 +120,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     const interval = setInterval(fetchDesigns, 10000)
     
     return () => clearInterval(interval)
-  }, [])
+  }, [selectedDesignId])
 
   // 계정 목록 조회
   const fetchAccounts = async () => {
