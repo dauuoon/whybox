@@ -134,6 +134,8 @@ app.patch("/api/designs/:id", async (req, res) => {
     const { id } = req.params;
     const { title, description, image_url, feedback, status, finalFeedbackCompletedAt } = req.body;
     
+    console.log('PATCH /api/designs/:id called with:', { id, status, feedback });
+    
     // 업데이트할 필드 구성
     const updateData = {};
     if (title) updateData.title = title;
@@ -154,16 +156,24 @@ app.patch("/api/designs/:id", async (req, res) => {
       }
     }
     
+    console.log('Update data:', updateData);
+    
     const { data, error } = await supabase
       .from("designs")
       .update(updateData)
-      .eq("id", id)
+      .eq("id", parseInt(id))
       .select();
-    if (error) throw error;
-    res.json(data[0]);
+    
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+    
+    console.log('Update successful:', data);
+    res.json(data[0] || { success: true });
   } catch (err) {
     console.error("PATCH /api/designs/:id error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err });
   }
 });
 
