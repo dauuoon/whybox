@@ -53,7 +53,8 @@ app.get("/api/designs", async (req, res) => {
     if (error) throw error;
     res.json(data || []);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("GET /api/designs error:", err);
+    res.status(500).json({ error: err.message, details: err });
   }
 });
 
@@ -175,11 +176,115 @@ const admins = [
   { id: "admin001", username: "admin", password: "1720", email: "admin@whybox.com" },
 ];
 
+const users = [];
+
 app.post("/api/auth/admin/login", (req, res) => {
   const { username, password } = req.body;
   const admin = admins.find((a) => a.username === username && a.password === password);
   if (!admin) return res.status(401).json({ error: "Invalid credentials" });
   res.json({ success: true, user: { id: admin.id, username: admin.username, email: admin.email, role: "admin" } });
+});
+
+// ============ Admins API ============
+app.get("/api/admins", (req, res) => {
+  res.json(admins.map(a => ({ id: a.id, username: a.username, email: a.email, createdAt: new Date().toISOString() })));
+});
+
+app.post("/api/admins", (req, res) => {
+  try {
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    const newAdmin = {
+      id: `admin${Date.now()}`,
+      username,
+      password,
+      email,
+      createdAt: new Date().toISOString()
+    };
+    admins.push(newAdmin);
+    res.status(201).json({ id: newAdmin.id, username: newAdmin.username, email: newAdmin.email, createdAt: newAdmin.createdAt });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.patch("/api/admins/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email } = req.body;
+    const admin = admins.find(a => a.id === id);
+    if (!admin) return res.status(404).json({ error: "Admin not found" });
+    if (username) admin.username = username;
+    if (email) admin.email = email;
+    res.json({ id: admin.id, username: admin.username, email: admin.email });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/admins/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const index = admins.findIndex(a => a.id === id);
+    if (index === -1) return res.status(404).json({ error: "Admin not found" });
+    admins.splice(index, 1);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============ Users API ============
+app.get("/api/users", (req, res) => {
+  res.json(users.map(u => ({ id: u.id, username: u.username, email: u.email, createdAt: u.createdAt })));
+});
+
+app.post("/api/users", (req, res) => {
+  try {
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    const newUser = {
+      id: `user${Date.now()}`,
+      username,
+      password,
+      email,
+      createdAt: new Date().toISOString()
+    };
+    users.push(newUser);
+    res.status(201).json({ id: newUser.id, username: newUser.username, email: newUser.email, createdAt: newUser.createdAt });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.patch("/api/users/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email } = req.body;
+    const user = users.find(u => u.id === id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (username) user.username = username;
+    if (email) user.email = email;
+    res.json({ id: user.id, username: user.username, email: user.email });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/users/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const index = users.findIndex(u => u.id === id);
+    if (index === -1) return res.status(404).json({ error: "User not found" });
+    users.splice(index, 1);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // 404
