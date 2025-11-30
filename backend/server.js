@@ -62,7 +62,9 @@ app.get("/api/designs", async (req, res) => {
       pins: [],
       title: d.title,
       description: d.description,
-      image_url: d.image_url
+      image_url: d.image_url,
+      userName: d.user_name,
+      userId: d.user_id
     }));
     res.json(designs);
   } catch (err) {
@@ -135,10 +137,10 @@ app.get("/api/pins", async (req, res) => {
 
 app.post("/api/pins", async (req, res) => {
   try {
-    const { design_id, x, y } = req.body;
+    const { design_id, x, y, text } = req.body;
     const { data, error } = await supabase
       .from("pins")
-      .insert([{ design_id, x, y }])
+      .insert([{ design_id, x, y, text: text || "" }])
       .select();
     if (error) throw error;
     res.status(201).json(data[0]);
@@ -154,7 +156,7 @@ app.post("/api/designs/:designId/pins", async (req, res) => {
     const { x, y, text } = req.body;
     const { data, error } = await supabase
       .from("pins")
-      .insert([{ design_id: parseInt(designId), x, y }])
+      .insert([{ design_id: parseInt(designId), x, y, text: text || "" }])
       .select();
     if (error) throw error;
     res.status(201).json(data[0]);
