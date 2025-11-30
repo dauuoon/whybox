@@ -95,7 +95,8 @@ app.get("/api/designs", async (req, res) => {
         userId: d.user_id,
         questionCreatedAt: d.question_created_at,
         answerSubmittedAt: d.answer_submitted_at,
-        finalFeedbackCompletedAt: d.final_feedback_completed_at
+        finalFeedbackCompletedAt: d.final_feedback_completed_at,
+        feedback: d.feedback
       };
     });
     res.json(result);
