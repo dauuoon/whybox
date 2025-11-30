@@ -140,6 +140,24 @@ app.delete("/api/designs/:id", async (req, res) => {
   }
 });
 
+// 설계 상태 변경
+app.patch("/api/designs/:designId/status", async (req, res) => {
+  try {
+    const { designId } = req.params;
+    const { status } = req.body;
+    const { data, error } = await supabase
+      .from("designs")
+      .update({ status })
+      .eq("id", parseInt(designId))
+      .select();
+    if (error) throw error;
+    res.json(data[0] || { success: true });
+  } catch (err) {
+    console.error("PATCH /api/designs/:designId/status error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Pins API
 app.get("/api/pins", async (req, res) => {
   try {
@@ -214,6 +232,23 @@ app.post("/api/comments", async (req, res) => {
     if (error) throw error;
     res.status(201).json(data[0]);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 특정 핀의 댓글 추가
+app.post("/api/designs/:designId/pins/:pinId/comments", async (req, res) => {
+  try {
+    const { pinId } = req.params;
+    const { text } = req.body;
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([{ pin_id: parseInt(pinId), text }])
+      .select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (err) {
+    console.error("POST /api/designs/:designId/pins/:pinId/comments error:", err);
     res.status(500).json({ error: err.message });
   }
 });
