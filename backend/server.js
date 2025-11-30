@@ -267,10 +267,10 @@ app.post("/api/comments", async (req, res) => {
 app.post("/api/designs/:designId/pins/:pinId/comments", async (req, res) => {
   try {
     const { pinId } = req.params;
-    const { text } = req.body;
+    const { text, author } = req.body;
     const { data, error } = await supabase
       .from("comments")
-      .insert([{ pin_id: parseInt(pinId), text }])
+      .insert([{ pin_id: parseInt(pinId), text, author }])
       .select();
     if (error) throw error;
     res.status(201).json(data[0]);
@@ -342,7 +342,7 @@ app.post("/api/auth/user/login", async (req, res) => {
         email: user.email, 
         name: user.name, 
         experience: user.experience, 
-        jobTitle: user.job_title || '',
+        jobTitle: '',
         role: "user" 
       } 
     });
@@ -441,8 +441,7 @@ app.post("/api/users", async (req, res) => {
         password,
         email: email || `${username}@whybox.com`,
         name: name || '',
-        experience: experience || '',
-        job_title: jobTitle || ''
+        experience: experience || ''
       }])
       .select();
     if (error) throw error;
@@ -458,7 +457,7 @@ app.patch("/api/users/:id", async (req, res) => {
     const { username, email, name, experience, jobTitle } = req.body;
     const { data, error } = await supabase
       .from("users")
-      .update({ username, email, name, experience, job_title: jobTitle })
+      .update({ username, email, name, experience })
       .eq("id", id)
       .select();
     if (error) throw error;
