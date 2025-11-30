@@ -135,7 +135,7 @@ app.patch("/api/designs/:id", async (req, res) => {
     const { title, description, image_url, feedback, status } = req.body;
     
     // 업데이트할 필드 구성
-    const updateData: any = {};
+    const updateData = {};
     if (title) updateData.title = title;
     if (description) updateData.description = description;
     if (image_url) updateData.image_url = image_url;
