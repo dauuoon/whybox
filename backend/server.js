@@ -153,10 +153,17 @@ app.delete("/api/designs/:id", async (req, res) => {
 app.patch("/api/designs/:designId/status", async (req, res) => {
   try {
     const { designId } = req.params;
-    const { status } = req.body;
+    const { status, answerSubmittedAt, questionCreatedAt, finalFeedbackCompletedAt } = req.body;
+    
+    // 업데이트할 필드 구성
+    const updateData = { status };
+    if (answerSubmittedAt) updateData.answer_submitted_at = answerSubmittedAt;
+    if (questionCreatedAt) updateData.question_created_at = questionCreatedAt;
+    if (finalFeedbackCompletedAt) updateData.final_feedback_completed_at = finalFeedbackCompletedAt;
+    
     const { data, error } = await supabase
       .from("designs")
-      .update({ status })
+      .update(updateData)
       .eq("id", parseInt(designId))
       .select();
     if (error) throw error;
@@ -170,9 +177,20 @@ app.patch("/api/designs/:designId/status", async (req, res) => {
 // Pins API
 app.get("/api/pins", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("pins").select("*");
-    if (error) throw error;
-    res.json(data || []);
+    const { data: pins, error: pinsError } = await supabase.from("pins").select("*");
+    if (pinsError) throw pinsError;
+    
+    // 모든 댓글 가져오기
+    const { data: comments, error: commentsError } = await supabase.from("comments").select("*");
+    if (commentsError) throw commentsError;
+    
+    // 각 핀에 댓글 추가
+    const pinsWithComments = (pins || []).map(pin => ({
+      ...pin,
+      comments: (comments || []).filter(c => c.pin_id === pin.id)
+    }));
+    
+    res.json(pinsWithComments);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -324,6 +342,7 @@ app.post("/api/auth/user/login", async (req, res) => {
         email: user.email, 
         name: user.name, 
         experience: user.experience, 
+        jobTitle: user.job_title || '',
         role: "user" 
       } 
     });
@@ -422,7 +441,8 @@ app.post("/api/users", async (req, res) => {
         password,
         email: email || `${username}@whybox.com`,
         name: name || '',
-        experience: experience || ''
+        experience: experience || '',
+        job_title: jobTitle || ''
       }])
       .select();
     if (error) throw error;
@@ -435,10 +455,10 @@ app.post("/api/users", async (req, res) => {
 app.patch("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, name, experience } = req.body;
+    const { username, email, name, experience, jobTitle } = req.body;
     const { data, error } = await supabase
       .from("users")
-      .update({ username, email, name, experience })
+      .update({ username, email, name, experience, job_title: jobTitle })
       .eq("id", id)
       .select();
     if (error) throw error;

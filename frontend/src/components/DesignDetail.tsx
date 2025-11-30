@@ -219,11 +219,14 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
     
     // 백엔드에 상태 변경 요청
     try {
-      console.log('🔷 상태 변경 요청:', { status: '답변전송완료' })
+      console.log('🔷 상태 변경 요청:', { status: '답변전송완료', answerSubmittedAt })
       const response = await fetch(`${API_BASE_URL}/designs/${historyItem.id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: '답변전송완료' })
+        body: JSON.stringify({ 
+          status: '답변전송완료',
+          answerSubmittedAt: answerSubmittedAt
+        })
       })
       if (!response.ok) {
         throw new Error(`API Error: ${response.status}`)
