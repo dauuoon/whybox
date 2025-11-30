@@ -4,6 +4,7 @@ import LogoHeader from './LogoHeader'
 import DesignDetail from './DesignDetail'
 import { useState, useEffect } from 'react'
 import { API_BASE_URL } from '../api/config'
+import { useAuth } from '../context/AuthContext'
 
 // 날짜를 YYYY.MM.DD 형식으로 변환
 const formatDate = (dateString: string) => {
@@ -42,6 +43,7 @@ interface ImageHistoryProps {
 }
 
 export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<ImageHistoryProps, 'historyItems'>) {
+  const { userInfo } = useAuth()
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
@@ -53,7 +55,9 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
     const fetchDesigns = async () => {
       try {
         console.log('🔷 백엔드에서 디자인 조회 시작...')
-        const response = await fetch(`${API_BASE_URL}/designs`)
+        // 현재 사용자의 설계만 조회
+        const userId = userInfo?.id || ''
+        const response = await fetch(`${API_BASE_URL}/designs?userId=${encodeURIComponent(userId)}`)
         if (!response.ok) {
           throw new Error(`API Error: ${response.status}`)
         }

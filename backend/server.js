@@ -49,7 +49,16 @@ app.get("/api", (req, res) => {
 // Designs API
 app.get("/api/designs", async (req, res) => {
   try {
-    const { data: designs, error: designsError } = await supabase.from("designs").select("*");
+    const { userId } = req.query;
+    
+    let query = supabase.from("designs").select("*");
+    
+    // userId가 전달되면 해당 사용자의 설계만 조회
+    if (userId) {
+      query = query.eq("user_id", userId);
+    }
+    
+    const { data: designs, error: designsError } = await query;
     if (designsError) throw designsError;
     
     // 모든 핀 가져오기
@@ -147,10 +156,7 @@ app.patch("/api/designs/:designId/status", async (req, res) => {
     const { status } = req.body;
     const { data, error } = await supabase
       .from("designs")
-      .update({ 
-        status,
-        updated_at: new Date().toISOString()
-      })
+      .update({ status })
       .eq("id", parseInt(designId))
       .select();
     if (error) throw error;

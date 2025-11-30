@@ -70,7 +70,7 @@ export default function Login() {
           id: userData.user.username,
           name: userData.user.name,
           experience: userData.user.experience,
-          jobTitle: userData.user.jobTitle,
+          jobTitle: userData.user.jobTitle || '',
           role: 'user'
         })
         setToastMessage('로그인을 성공했습니다.')
