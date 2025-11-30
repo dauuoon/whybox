@@ -49,24 +49,40 @@ app.get("/api", (req, res) => {
 // Designs API
 app.get("/api/designs", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("designs").select("*");
-    if (error) throw error;
+    const { data: designs, error: designsError } = await supabase.from("designs").select("*");
+    if (designsError) throw designsError;
+    
+    // 모든 핀 가져오기
+    const { data: allPins, error: pinsError } = await supabase.from("pins").select("*");
+    if (pinsError) throw pinsError;
+    
     // 프론트엔드 형식으로 변환
-    const designs = (data || []).map(d => ({
-      id: d.id,
-      imageUrl: d.image_url,
-      category: d.title,
-      notes: d.description,
-      date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
-      status: '질문생성중',
-      pins: [],
-      title: d.title,
-      description: d.description,
-      image_url: d.image_url,
-      userName: d.user_name,
-      userId: d.user_id
-    }));
-    res.json(designs);
+    const result = (designs || []).map(d => {
+      // 이 설계의 핀들만 필터링
+      const designPins = (allPins || []).filter(p => p.design_id === d.id).map(p => ({
+        id: p.id,
+        designId: p.design_id,
+        x: p.x,
+        y: p.y,
+        text: p.text
+      }));
+      
+      return {
+        id: d.id,
+        imageUrl: d.image_url,
+        category: d.title,
+        notes: d.description,
+        date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
+        status: '질문생성중',
+        pins: designPins,
+        title: d.title,
+        description: d.description,
+        image_url: d.image_url,
+        userName: d.user_name,
+        userId: d.user_id
+      };
+    });
+    res.json(result);
   } catch (err) {
     console.error("GET /api/designs error:", err);
     res.status(500).json({ error: err.message, details: err });
