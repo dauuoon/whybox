@@ -186,8 +186,8 @@ app.post("/api/auth/admin/login", (req, res) => {
 });
 
 app.post("/api/auth/user/login", (req, res) => {
-  const { id, password } = req.body;
-  const user = users.find((u) => u.id === id && u.password === password);
+  const { username, password } = req.body;
+  const user = users.find((u) => u.username === username && u.password === password);
   if (!user) return res.status(401).json({ error: "Invalid credentials" });
   res.json({ success: true, user: { id: user.id, username: user.username, email: user.email, name: user.name, experience: user.experience, jobTitle: user.jobTitle, role: "user" } });
 });
