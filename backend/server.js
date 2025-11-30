@@ -61,19 +61,23 @@ app.get("/api/designs", async (req, res) => {
     const { data: designs, error: designsError } = await query;
     if (designsError) throw designsError;
     
-    // 모든 핀 가져오기
+    // 모든 핀과 댓글 가져오기
     const { data: allPins, error: pinsError } = await supabase.from("pins").select("*");
     if (pinsError) throw pinsError;
     
+    const { data: allComments, error: commentsError } = await supabase.from("comments").select("*");
+    if (commentsError) throw commentsError;
+    
     // 프론트엔드 형식으로 변환
     const result = (designs || []).map(d => {
-      // 이 설계의 핀들만 필터링
+      // 이 설계의 핀들만 필터링하고 댓글 포함
       const designPins = (allPins || []).filter(p => p.design_id === d.id).map(p => ({
         id: p.id,
         designId: p.design_id,
         x: p.x,
         y: p.y,
-        text: p.text
+        text: p.text,
+        comments: (allComments || []).filter(c => c.pin_id === p.id)
       }));
       
       return {
@@ -88,7 +92,10 @@ app.get("/api/designs", async (req, res) => {
         description: d.description,
         image_url: d.image_url,
         userName: d.user_name,
-        userId: d.user_id
+        userId: d.user_id,
+        questionCreatedAt: d.question_created_at,
+        answerSubmittedAt: d.answer_submitted_at,
+        finalFeedbackCompletedAt: d.final_feedback_completed_at
       };
     });
     res.json(result);

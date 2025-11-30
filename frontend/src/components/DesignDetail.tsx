@@ -189,7 +189,7 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
 
   const handleSendAnswers = async () => {
     const allAnswersProvided = historyItem.pins?.every(pin => 
-      pin.comments && pin.comments.some(c => c.author === (userInfo?.name || '사용자'))
+      pin.comments && pin.comments.length > 0
     )
     
     if (!allAnswersProvided) return

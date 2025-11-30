@@ -32,6 +32,9 @@ interface Design {
   createdAt?: string
   userName?: string
   userId?: string
+  questionCreatedAt?: string
+  answerSubmittedAt?: string
+  finalFeedbackCompletedAt?: string
 }
 
 interface AdminPanelProps {
@@ -240,10 +243,24 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
     try {
       console.log('📍 관리자: 상태 변경 요청:', newStatus)
+      
+      // 상태에 따라 날짜 필드 추가
+      const payload: any = { status: newStatus }
+      const now = new Date()
+      const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+      
+      if (newStatus === '질문생성완료') {
+        payload.questionCreatedAt = dateStr
+      } else if (newStatus === '답변전송완료') {
+        payload.answerSubmittedAt = dateStr
+      } else if (newStatus === '최종피드백완료') {
+        payload.finalFeedbackCompletedAt = dateStr
+      }
+      
       const response = await fetch(`${API_BASE_URL}/designs/${selectedDesignId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify(payload)
       })
 
       if (!response.ok) {
@@ -257,6 +274,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       const updatedDesigns = designs.map(d => {
         if (d.id === selectedDesignId) {
           d.status = newStatus as any
+          if (newStatus === '질문생성완료') {
+            d.questionCreatedAt = dateStr
+          } else if (newStatus === '답변전송완료') {
+            d.answerSubmittedAt = dateStr
+          } else if (newStatus === '최종피드백완료') {
+            d.finalFeedbackCompletedAt = dateStr
+          }
         }
         return d
       })
