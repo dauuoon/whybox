@@ -121,6 +121,27 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   const selectedDesign = selectedDesignId ? designs.find(d => d.id === selectedDesignId) : null
 
+  // 특정 설계만 새로고침
+  const refreshSingleDesign = async (designId: number) => {
+    try {
+      console.log('🔷 관리자: 특정 디자인 새로고침:', designId)
+      const response = await fetch(`${API_BASE_URL}/designs`)
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`)
+      }
+      const allDesigns = await response.json()
+      const updatedDesign = allDesigns.find((d: any) => d.id === designId)
+      if (updatedDesign) {
+        setDesigns(prevDesigns => 
+          prevDesigns.map(d => d.id === designId ? updatedDesign : d)
+        )
+        console.log('✅ 특정 디자인 새로고침 완료')
+      }
+    } catch (error) {
+      console.error('❌ 디자인 새로고침 실패:', error)
+    }
+  }
+
   // 이미지 클릭으로 핀 위치 선택
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const img = e.currentTarget
@@ -160,15 +181,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       const newPin = await response.json()
       console.log('✅ 관리자: 핀 추가 완료:', newPin)
 
-      // 로컬 state 업데이트
-      const updatedDesigns = designs.map(d => {
-        if (d.id === selectedDesignId) {
-          if (!d.pins) d.pins = []
-          d.pins.push(newPin)
-        }
-        return d
-      })
-      setDesigns(updatedDesigns)
+      // 특정 설계만 새로고침
+      await refreshSingleDesign(selectedDesignId)
 
       // 입력값 초기화
       setNewPinText('')
