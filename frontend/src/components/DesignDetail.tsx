@@ -163,6 +163,12 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
           
           // 백엔드에서 저장된 댓글 즉시 새로고침 (부모 새로고침 대기 안함)
           await refreshComments(pinId)
+          
+          // 상태 강제 갱신 (React에게 다시 렌더링하도록)
+          const updatedPin = historyItem.pins?.find(p => p.id === pinId)
+          if (updatedPin && updatedPin.comments) {
+            updatedPin.comments = [...updatedPin.comments]
+          }
         } catch (error) {
           console.error('❌ 답변 저장 실패:', error)
           alert('답변 저장에 실패했습니다.')
@@ -523,11 +529,11 @@ export default function DesignDetail({ historyItem, onBack }: DesignDetailProps)
               <button
                 onClick={handleSendAnswers}
                 disabled={isSendingAnswers || !historyItem.pins?.every(pin => 
-                  pin.comments && pin.comments.some(c => c.author === (userInfo?.name || '사용자'))
+                  pin.comments && pin.comments.length > 0
                 )}
                 className={`status-button ${
                   historyItem.pins?.every(pin => 
-                    pin.comments && pin.comments.some(c => c.author === (userInfo?.name || '사용자'))
+                    pin.comments && pin.comments.length > 0
                   ) && !isSendingAnswers ? 'status-button-send' : ''
                 }`}>
                 {isSendingAnswers ? (

@@ -277,12 +277,10 @@ app.post("/api/designs/:designId/pins/:pinId/comments", async (req, res) => {
     const { text, author } = req.body;
     const { data, error } = await supabase
       .from("comments")
-      .insert([{ pin_id: parseInt(pinId), text }])
+      .insert([{ pin_id: parseInt(pinId), text, author: author || '사용자' }])
       .select();
     if (error) throw error;
-    // author 정보를 응답에 추가 (DB에는 저장하지 않음)
-    const result = { ...data[0], author };
-    res.status(201).json(result);
+    res.status(201).json(data[0]);
   } catch (err) {
     console.error("POST /api/designs/:designId/pins/:pinId/comments error:", err);
     res.status(500).json({ error: err.message });
@@ -296,6 +294,26 @@ app.delete("/api/comments/:id", async (req, res) => {
     if (error) throw error;
     res.json({ success: true });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 댓글 피드백 추가
+app.patch("/api/designs/:designId/pins/:pinId/comments/:commentId/feedback", async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { feedbackText } = req.body;
+    
+    const { data, error } = await supabase
+      .from("comments")
+      .update({ admin_feedback: feedbackText })
+      .eq("id", parseInt(commentId))
+      .select();
+    
+    if (error) throw error;
+    res.json(data[0]);
+  } catch (err) {
+    console.error("PATCH feedback error:", err);
     res.status(500).json({ error: err.message });
   }
 });
