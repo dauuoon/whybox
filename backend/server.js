@@ -318,7 +318,6 @@ app.post("/api/auth/user/login", async (req, res) => {
         email: user.email, 
         name: user.name, 
         experience: user.experience, 
-        jobTitle: user.jobTitle, 
         role: "user" 
       } 
     });
@@ -417,8 +416,7 @@ app.post("/api/users", async (req, res) => {
         password,
         email: email || `${username}@whybox.com`,
         name: name || '',
-        experience: experience || '',
-        jobTitle: jobTitle || ''
+        experience: experience || ''
       }])
       .select();
     if (error) throw error;
@@ -431,10 +429,10 @@ app.post("/api/users", async (req, res) => {
 app.patch("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, name, experience, jobTitle } = req.body;
+    const { username, email, name, experience } = req.body;
     const { data, error } = await supabase
       .from("users")
-      .update({ username, email, name, experience, jobTitle })
+      .update({ username, email, name, experience })
       .eq("id", id)
       .select();
     if (error) throw error;
