@@ -147,7 +147,10 @@ app.patch("/api/designs/:designId/status", async (req, res) => {
     const { status } = req.body;
     const { data, error } = await supabase
       .from("designs")
-      .update({ status })
+      .update({ 
+        status,
+        updated_at: new Date().toISOString()
+      })
       .eq("id", parseInt(designId))
       .select();
     if (error) throw error;
@@ -265,15 +268,32 @@ app.delete("/api/comments/:id", async (req, res) => {
 });
 
 // Admin Login
-const admins = [
-  { id: "admin001", username: "admin", password: "1720", email: "admin@whybox.com" },
-];
-
-app.post("/api/auth/admin/login", (req, res) => {
-  const { username, password } = req.body;
-  const admin = admins.find((a) => a.username === username && a.password === password);
-  if (!admin) return res.status(401).json({ error: "Invalid credentials" });
-  res.json({ success: true, user: { id: admin.id, username: admin.username, email: admin.email, role: "admin" } });
+app.post("/api/auth/admin/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const { data, error } = await supabase
+      .from("admins")
+      .select("*")
+      .eq("username", username);
+    
+    if (error) throw error;
+    if (!data || data.length === 0) return res.status(401).json({ error: "Invalid credentials" });
+    
+    const admin = data[0];
+    if (admin.password !== password) return res.status(401).json({ error: "Invalid credentials" });
+    
+    res.json({ 
+      success: true, 
+      user: { 
+        id: admin.id, 
+        username: admin.username, 
+        email: admin.email, 
+        role: "admin" 
+      } 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post("/api/auth/user/login", async (req, res) => {
@@ -308,50 +328,64 @@ app.post("/api/auth/user/login", async (req, res) => {
 });
 
 // ============ Admins API ============
-app.get("/api/admins", (req, res) => {
-  res.json(admins.map(a => ({ id: a.id, username: a.username, email: a.email, createdAt: new Date().toISOString() })));
+app.get("/api/admins", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("admins").select("*");
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.post("/api/admins", (req, res) => {
+app.post("/api/admins", async (req, res) => {
   try {
     const { username, password, email } = req.body;
     if (!username || !password || !email) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    const newAdmin = {
-      id: `admin${Date.now()}`,
-      username,
-      password,
-      email,
-      createdAt: new Date().toISOString()
-    };
-    admins.push(newAdmin);
-    res.status(201).json({ id: newAdmin.id, username: newAdmin.username, email: newAdmin.email, createdAt: newAdmin.createdAt });
+    const { data, error } = await supabase
+      .from("admins")
+      .insert([{
+        id: `admin${Date.now()}`,
+        username,
+        password,
+        email,
+        created_at: new Date().toISOString()
+      }])
+      .select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.patch("/api/admins/:id", (req, res) => {
+app.patch("/api/admins/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email } = req.body;
-    const admin = admins.find(a => a.id === id);
-    if (!admin) return res.status(404).json({ error: "Admin not found" });
-    if (username) admin.username = username;
-    if (email) admin.email = email;
-    res.json({ id: admin.id, username: admin.username, email: admin.email });
+    const { data, error } = await supabase
+      .from("admins")
+      .update({ username, email })
+      .eq("id", id)
+      .select();
+    if (error) throw error;
+    if (!data || data.length === 0) return res.status(404).json({ error: "Admin not found" });
+    res.json(data[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.delete("/api/admins/:id", (req, res) => {
+app.delete("/api/admins/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const index = admins.findIndex(a => a.id === id);
-    if (index === -1) return res.status(404).json({ error: "Admin not found" });
-    admins.splice(index, 1);
+    const { error } = await supabase
+      .from("admins")
+      .delete()
+      .eq("id", id);
+    if (error) throw error;
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
