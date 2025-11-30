@@ -73,7 +73,7 @@ app.get("/api/designs", async (req, res) => {
         category: d.title,
         notes: d.description,
         date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
-        status: '질문생성중',
+        status: d.status || '질문생성중',
         pins: designPins,
         title: d.title,
         description: d.description,
