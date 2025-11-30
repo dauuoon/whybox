@@ -51,7 +51,20 @@ app.get("/api/designs", async (req, res) => {
   try {
     const { data, error } = await supabase.from("designs").select("*");
     if (error) throw error;
-    res.json(data || []);
+    // 프론트엔드 형식으로 변환
+    const designs = (data || []).map(d => ({
+      id: d.id,
+      imageUrl: d.image_url,
+      category: d.title,
+      notes: d.description,
+      date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
+      status: '질문생성중',
+      pins: [],
+      title: d.title,
+      description: d.description,
+      image_url: d.image_url
+    }));
+    res.json(designs);
   } catch (err) {
     console.error("GET /api/designs error:", err);
     res.status(500).json({ error: err.message, details: err });
