@@ -82,7 +82,9 @@ app.post("/api/designs", async (req, res) => {
       .insert([{ 
         title: category || "Untitled",
         description: notes || "",
-        image_url: imageUrl
+        image_url: imageUrl,
+        user_name: userName || "Unknown",
+        user_id: userId || "unknown"
       }])
       .select();
     if (error) throw error;
@@ -141,6 +143,23 @@ app.post("/api/pins", async (req, res) => {
     if (error) throw error;
     res.status(201).json(data[0]);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 특정 설계의 핀 추가 (관리자 패널용)
+app.post("/api/designs/:designId/pins", async (req, res) => {
+  try {
+    const { designId } = req.params;
+    const { x, y, text } = req.body;
+    const { data, error } = await supabase
+      .from("pins")
+      .insert([{ design_id: parseInt(designId), x, y }])
+      .select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (err) {
+    console.error("POST /api/designs/:designId/pins error:", err);
     res.status(500).json({ error: err.message });
   }
 });
