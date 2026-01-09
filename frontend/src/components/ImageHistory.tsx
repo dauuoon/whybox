@@ -78,11 +78,6 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
     }
 
     fetchDesigns()
-
-    // 10초마다 디자인 새로고침 (사용자의 답변 및 관리자의 질문 실시간 확인)
-    const interval = setInterval(fetchDesigns, 10000)
-    
-    return () => clearInterval(interval)
   }, [selectedItemId, userInfo?.id])
 
   const handleDeleteItem = async (id: string) => {

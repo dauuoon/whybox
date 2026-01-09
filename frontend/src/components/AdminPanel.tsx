@@ -115,11 +115,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     }
 
     fetchDesigns()
-
-    // 10초마다 디자인 새로고침 (사용자의 답변 실시간 확인)
-    const interval = setInterval(fetchDesigns, 10000)
-    
-    return () => clearInterval(interval)
   }, [selectedDesignId])
 
   // 계정 목록 조회
