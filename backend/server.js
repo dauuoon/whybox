@@ -49,7 +49,7 @@ app.get("/api", (req, res) => {
 // Designs API
 app.get("/api/designs", async (req, res) => {
   try {
-    const { userId, limit = 50 } = req.query;
+    const { userId, limit = 20 } = req.query;
     
     let query = supabase
       .from("designs")
@@ -63,80 +63,35 @@ app.get("/api/designs", async (req, res) => {
     }
     
     const { data: designs, error: designsError } = await query;
-    if (designsError) throw designsError;
+    if (designsError) {
+      console.error("Designs query error:", designsError);
+      throw designsError;
+    }
     
     if (!designs || designs.length === 0) {
       return res.json([]);
     }
     
-    // 필요한 design_id만 추출
-    const designIds = designs.map(d => d.id);
+    // 간단한 응답으로 변환 (핀과 댓글 제외)
+    const result = designs.map(d => ({
+      id: d.id,
+      imageUrl: d.image_url,
+      category: d.title,
+      notes: d.description,
+      date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
+      status: d.status || '질문생성중',
+      pins: [], // 빈 배열로 초기화
+      title: d.title,
+      description: d.description,
+      image_url: d.image_url,
+      userName: d.user_name,
+      userId: d.user_id,
+      questionCreatedAt: d.question_created_at,
+      answerSubmittedAt: d.answer_submitted_at,
+      finalFeedbackCompletedAt: d.final_feedback_completed_at,
+      feedback: d.feedback
+    }));
     
-    // 해당 설계들의 핀만 조회
-    const { data: allPins, error: pinsError } = await supabase
-      .from("pins")
-      .select("*")
-      .in("design_id", designIds);
-    if (pinsError) throw pinsError;
-    
-    // 필요한 pin_id만 추출
-    const pinIds = (allPins || []).map(p => p.id);
-    
-    // 해당 핀들의 댓글만 조회 (pin이 있을 때만)
-    let allComments = [];
-    if (pinIds.length > 0) {
-      const { data: comments, error: commentsError } = await supabase
-        .from("comments")
-        .select("*")
-        .in("pin_id", pinIds);
-      if (commentsError) throw commentsError;
-      allComments = comments || [];
-    }
-    
-    // 맵 형태로 변환 (검색 성능 향상)
-    const commentsMap = {};
-    allComments.forEach(c => {
-      if (!commentsMap[c.pin_id]) {
-        commentsMap[c.pin_id] = [];
-      }
-      commentsMap[c.pin_id].push(c);
-    });
-    
-    const pinsMap = {};
-    (allPins || []).forEach(p => {
-      pinsMap[p.design_id] = (pinsMap[p.design_id] || []).concat(p);
-    });
-    
-    // 프론트엔드 형식으로 변환
-    const result = designs.map(d => {
-      const designPins = (pinsMap[d.id] || []).map(p => ({
-        id: p.id,
-        designId: p.design_id,
-        x: p.x,
-        y: p.y,
-        text: p.text,
-        comments: commentsMap[p.id] || []
-      }));
-      
-      return {
-        id: d.id,
-        imageUrl: d.image_url,
-        category: d.title,
-        notes: d.description,
-        date: d.created_at ? new Date(d.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
-        status: d.status || '질문생성중',
-        pins: designPins,
-        title: d.title,
-        description: d.description,
-        image_url: d.image_url,
-        userName: d.user_name,
-        userId: d.user_id,
-        questionCreatedAt: d.question_created_at,
-        answerSubmittedAt: d.answer_submitted_at,
-        finalFeedbackCompletedAt: d.final_feedback_completed_at,
-        feedback: d.feedback
-      };
-    });
     res.json(result);
   } catch (err) {
     console.error("GET /api/designs error:", err);
@@ -164,6 +119,89 @@ app.post("/api/designs", async (req, res) => {
     res.status(201).json(data[0]);
   } catch (err) {
     console.error("POST /api/designs error:", err);
+    res.status(500).json({ error: err.message, details: err });
+  }
+});
+
+// 특정 디자인 상세 조회 (핀, 댓글 포함)
+app.get("/api/designs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // 디자인 조회
+    const { data: design, error: designError } = await supabase
+      .from("designs")
+      .select("*")
+      .eq("id", parseInt(id))
+      .single();
+    
+    if (designError) throw designError;
+    if (!design) {
+      return res.status(404).json({ error: "Design not found" });
+    }
+    
+    // 해당 디자인의 핀 조회
+    const { data: pins, error: pinsError } = await supabase
+      .from("pins")
+      .select("*")
+      .eq("design_id", parseInt(id));
+    
+    if (pinsError) throw pinsError;
+    
+    // 핀의 댓글 조회
+    const pinIds = (pins || []).map(p => p.id);
+    let comments = [];
+    if (pinIds.length > 0) {
+      const { data: commentsData, error: commentsError } = await supabase
+        .from("comments")
+        .select("*")
+        .in("pin_id", pinIds);
+      if (commentsError) throw commentsError;
+      comments = commentsData || [];
+    }
+    
+    // 댓글 맵 생성
+    const commentsMap = {};
+    comments.forEach(c => {
+      if (!commentsMap[c.pin_id]) {
+        commentsMap[c.pin_id] = [];
+      }
+      commentsMap[c.pin_id].push(c);
+    });
+    
+    // 핀에 댓글 포함
+    const pinsWithComments = (pins || []).map(p => ({
+      id: p.id,
+      designId: p.design_id,
+      x: p.x,
+      y: p.y,
+      text: p.text,
+      comments: commentsMap[p.id] || []
+    }));
+    
+    // 응답 구성
+    const result = {
+      id: design.id,
+      imageUrl: design.image_url,
+      category: design.title,
+      notes: design.description,
+      date: design.created_at ? new Date(design.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
+      status: design.status || '질문생성중',
+      pins: pinsWithComments,
+      title: design.title,
+      description: design.description,
+      image_url: design.image_url,
+      userName: design.user_name,
+      userId: design.user_id,
+      questionCreatedAt: design.question_created_at,
+      answerSubmittedAt: design.answer_submitted_at,
+      finalFeedbackCompletedAt: design.final_feedback_completed_at,
+      feedback: design.feedback
+    };
+    
+    res.json(result);
+  } catch (err) {
+    console.error("GET /api/designs/:id error:", err);
     res.status(500).json({ error: err.message, details: err });
   }
 });
