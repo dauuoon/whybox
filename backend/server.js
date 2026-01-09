@@ -9,7 +9,19 @@ const app = express();
 // Supabase 초기화
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+console.log("🔧 Environment Check:");
+console.log("SUPABASE_URL:", supabaseUrl ? "✅ Set" : "❌ Missing");
+console.log("SUPABASE_ANON_KEY:", supabaseKey ? "✅ Set" : "❌ Missing");
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error("❌ FATAL: Supabase environment variables are missing!");
+  console.error("Required: SUPABASE_URL and SUPABASE_ANON_KEY");
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
+console.log("✅ Supabase client initialized");
 
 // CORS 설정
 const corsOptions = {
@@ -49,7 +61,10 @@ app.get("/api", (req, res) => {
 // Designs API
 app.get("/api/designs", async (req, res) => {
   try {
+    console.log("🔍 /api/designs called");
     const { userId, limit = 20 } = req.query;
+    
+    console.log("📝 Query params:", { userId, limit });
     
     let query = supabase
       .from("designs")
@@ -62,13 +77,20 @@ app.get("/api/designs", async (req, res) => {
       query = query.eq("user_id", userId);
     }
     
+    console.log("🚀 Executing Supabase query...");
     const { data: designs, error: designsError } = await query;
+    
+    console.log("✅ Query response received");
+    
     if (designsError) {
-      console.error("Designs query error:", designsError);
+      console.error("❌ Designs query error:", designsError);
       throw designsError;
     }
     
+    console.log("📊 Designs found:", designs?.length || 0);
+    
     if (!designs || designs.length === 0) {
+      console.log("⚠️ No designs found, returning empty array");
       return res.json([]);
     }
     
