@@ -143,17 +143,18 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const refreshSingleDesign = async (designId: string | number) => {
     try {
       console.log('🔷 관리자: 특정 디자인 새로고침:', designId)
-      const response = await fetch(`${API_BASE_URL}/designs`)
+      const response = await fetch(`${API_BASE_URL}/designs/${designId}`)
       if (!response.ok) {
         throw new Error(`API Error: ${response.status}`)
       }
-      const allDesigns = await response.json()
-      const updatedDesign = allDesigns.find((d: any) => d.id === designId || d.id === parseInt(designId as string))
-      if (updatedDesign) {
-        setDesigns(prevDesigns => 
-          prevDesigns.map(d => d.id === updatedDesign.id ? updatedDesign : d)
-        )
+      const updatedDesign = await response.json()
+      if (updatedDesign && updatedDesign.id) {
+        setDesigns(prevDesigns => prevDesigns.map(d => (
+          d.id === (updatedDesign.id as number) ? updatedDesign : d
+        )))
         console.log('✅ 특정 디자인 새로고침 완료')
+      } else {
+        console.warn('⚠️ 특정 디자인 새로고침: 업데이트할 디자인을 찾지 못했습니다')
       }
     } catch (error) {
       console.error('❌ 디자인 새로고침 실패:', error)
