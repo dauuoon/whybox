@@ -629,8 +629,15 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log("✅ WHY BOX Backend - Supabase Connected");
-  console.log("Port:", PORT);
+  console.log("Server running on port:", PORT);
   console.log("DB: Supabase PostgreSQL");
+  console.log("Server is ready to accept connections");
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  console.error('Server error:', error);
+  process.exit(1);
 });
