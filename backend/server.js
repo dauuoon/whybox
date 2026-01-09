@@ -629,7 +629,7 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log("✅ WHY BOX Backend - Supabase Connected");
   console.log("Port:", PORT);
   console.log("DB: Supabase PostgreSQL");
