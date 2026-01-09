@@ -154,7 +154,7 @@ app.get("/api/designs/:id", async (req, res) => {
     // 디자인 조회
     const { data: design, error: designError } = await supabase
       .from("designs")
-      .select("*")
+      .select("id,image_url,title,description,created_at,status,user_name,user_id,question_created_at,answer_submitted_at,final_feedback_completed_at,feedback")
       .eq("id", parseInt(id))
       .single();
     
@@ -166,8 +166,10 @@ app.get("/api/designs/:id", async (req, res) => {
     // 해당 디자인의 핀 조회
     const { data: pins, error: pinsError } = await supabase
       .from("pins")
-      .select("*")
-      .eq("design_id", parseInt(id));
+      .select("id,design_id,x,y,text,created_at")
+      .eq("design_id", parseInt(id))
+      .order('id', { ascending: false })
+      .limit(200);
     
     if (pinsError) throw pinsError;
     
@@ -177,8 +179,10 @@ app.get("/api/designs/:id", async (req, res) => {
     if (pinIds.length > 0) {
       const { data: commentsData, error: commentsError } = await supabase
         .from("comments")
-        .select("*")
-        .in("pin_id", pinIds);
+        .select("id,pin_id,text,created_at")
+        .in("pin_id", pinIds)
+        .order('id', { ascending: false })
+        .limit(500);
       if (commentsError) throw commentsError;
       comments = commentsData || [];
     }

@@ -149,9 +149,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       }
       const updatedDesign = await response.json()
       if (updatedDesign && updatedDesign.id) {
-        setDesigns(prevDesigns => prevDesigns.map(d => (
-          d.id === (updatedDesign.id as number) ? updatedDesign : d
-        )))
+        setDesigns(prevDesigns => prevDesigns.map(d => 
+          d.id === updatedDesign.id ? updatedDesign : d
+        ))
         console.log('✅ 특정 디자인 새로고침 완료')
       } else {
         console.warn('⚠️ 특정 디자인 새로고침: 업데이트할 디자인을 찾지 못했습니다')
