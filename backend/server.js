@@ -49,9 +49,13 @@ app.get("/api", (req, res) => {
 // Designs API
 app.get("/api/designs", async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId, limit = 50 } = req.query;
     
-    let query = supabase.from("designs").select("*").order('created_at', { ascending: false });
+    let query = supabase
+      .from("designs")
+      .select("*")
+      .order('created_at', { ascending: false })
+      .limit(parseInt(limit));
     
     // userId가 전달되면 해당 사용자의 설계만 조회
     if (userId) {
@@ -78,15 +82,20 @@ app.get("/api/designs", async (req, res) => {
     // 필요한 pin_id만 추출
     const pinIds = (allPins || []).map(p => p.id);
     
-    // 해당 핀들의 댓글만 조회
-    const { data: allComments, error: commentsError } = pinIds.length > 0
-      ? await supabase.from("comments").select("*").in("pin_id", pinIds)
-      : Promise.resolve({ data: [] });
-    if (commentsError) throw commentsError;
+    // 해당 핀들의 댓글만 조회 (pin이 있을 때만)
+    let allComments = [];
+    if (pinIds.length > 0) {
+      const { data: comments, error: commentsError } = await supabase
+        .from("comments")
+        .select("*")
+        .in("pin_id", pinIds);
+      if (commentsError) throw commentsError;
+      allComments = comments || [];
+    }
     
     // 맵 형태로 변환 (검색 성능 향상)
     const commentsMap = {};
-    (allComments || []).forEach(c => {
+    allComments.forEach(c => {
       if (!commentsMap[c.pin_id]) {
         commentsMap[c.pin_id] = [];
       }
@@ -246,7 +255,11 @@ app.patch("/api/designs/:designId/status", async (req, res) => {
 // Pins API
 app.get("/api/pins", async (req, res) => {
   try {
-    const { data: pins, error: pinsError } = await supabase.from("pins").select("*");
+    const { limit = 200 } = req.query;
+    const { data: pins, error: pinsError } = await supabase
+      .from("pins")
+      .select("*")
+      .limit(parseInt(limit));
     if (pinsError) throw pinsError;
     
     // 모든 댓글 가져오기
@@ -310,7 +323,11 @@ app.delete("/api/pins/:id", async (req, res) => {
 // Comments API
 app.get("/api/comments", async (req, res) => {
   try {
-    const { data, error } = await supabase.from("comments").select("*");
+    const { limit = 500 } = req.query;
+    const { data, error } = await supabase
+      .from("comments")
+      .select("*")
+      .limit(parseInt(limit));
     if (error) throw error;
     res.json(data || []);
   } catch (err) {
