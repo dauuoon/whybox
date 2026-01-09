@@ -62,13 +62,14 @@ app.get("/api", (req, res) => {
 app.get("/api/designs", async (req, res) => {
   try {
     console.log("🔍 /api/designs called");
-    const { userId, limit = 20 } = req.query;
+    const { userId, limit = 10 } = req.query;
     
     console.log("📝 Query params:", { userId, limit });
     
+    // 필요한 컬럼만 명시적으로 선택
     let query = supabase
       .from("designs")
-      .select("*")
+      .select("id,image_url,title,description,created_at,status,user_name,user_id", { count: 'estimated' })
       .order('created_at', { ascending: false })
       .limit(parseInt(limit));
     
