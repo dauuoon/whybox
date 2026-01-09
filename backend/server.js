@@ -51,7 +51,7 @@ app.get("/api/designs", async (req, res) => {
   try {
     const { userId } = req.query;
     
-    let query = supabase.from("designs").select("*");
+    let query = supabase.from("designs").select("*").order('created_at', { ascending: false });
     
     // userId가 전달되면 해당 사용자의 설계만 조회
     if (userId) {
@@ -61,23 +61,52 @@ app.get("/api/designs", async (req, res) => {
     const { data: designs, error: designsError } = await query;
     if (designsError) throw designsError;
     
-    // 모든 핀과 댓글 가져오기
-    const { data: allPins, error: pinsError } = await supabase.from("pins").select("*");
+    if (!designs || designs.length === 0) {
+      return res.json([]);
+    }
+    
+    // 필요한 design_id만 추출
+    const designIds = designs.map(d => d.id);
+    
+    // 해당 설계들의 핀만 조회
+    const { data: allPins, error: pinsError } = await supabase
+      .from("pins")
+      .select("*")
+      .in("design_id", designIds);
     if (pinsError) throw pinsError;
     
-    const { data: allComments, error: commentsError } = await supabase.from("comments").select("*");
+    // 필요한 pin_id만 추출
+    const pinIds = (allPins || []).map(p => p.id);
+    
+    // 해당 핀들의 댓글만 조회
+    const { data: allComments, error: commentsError } = pinIds.length > 0
+      ? await supabase.from("comments").select("*").in("pin_id", pinIds)
+      : Promise.resolve({ data: [] });
     if (commentsError) throw commentsError;
     
+    // 맵 형태로 변환 (검색 성능 향상)
+    const commentsMap = {};
+    (allComments || []).forEach(c => {
+      if (!commentsMap[c.pin_id]) {
+        commentsMap[c.pin_id] = [];
+      }
+      commentsMap[c.pin_id].push(c);
+    });
+    
+    const pinsMap = {};
+    (allPins || []).forEach(p => {
+      pinsMap[p.design_id] = (pinsMap[p.design_id] || []).concat(p);
+    });
+    
     // 프론트엔드 형식으로 변환
-    const result = (designs || []).map(d => {
-      // 이 설계의 핀들만 필터링하고 댓글 포함
-      const designPins = (allPins || []).filter(p => p.design_id === d.id).map(p => ({
+    const result = designs.map(d => {
+      const designPins = (pinsMap[d.id] || []).map(p => ({
         id: p.id,
         designId: p.design_id,
         x: p.x,
         y: p.y,
         text: p.text,
-        comments: (allComments || []).filter(c => c.pin_id === p.id)
+        comments: commentsMap[p.id] || []
       }));
       
       return {
