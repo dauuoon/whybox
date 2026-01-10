@@ -173,6 +173,31 @@ app.get("/api/designs/:id", async (req, res) => {
     
     if (pinsError) throw pinsError;
     
+    // 핀의 댓글 조회 (메모리 최적화: 핀당 최대 10개)
+    const pinIds = (pins || []).map(p => p.id);
+    let comments = [];
+    if (pinIds.length > 0) {
+      const { data: commentsData, error: commentsError } = await supabase
+        .from("comments")
+        .select("id,pin_id,text,created_at,author,admin_feedback")
+        .in("pin_id", pinIds)
+        .order('created_at', { ascending: false })
+        .limit(Math.min(pinIds.length * 10, 200)); // 핀당 최대 10개, 전체 최대 200개
+      if (commentsError) throw commentsError;
+      comments = commentsData || [];
+    }
+    
+    // 댓글 맵 생성 (핀당 최대 10개로 제한)
+    const commentsMap = {};
+    comments.forEach(c => {
+      if (!commentsMap[c.pin_id]) {
+        commentsMap[c.pin_id] = [];
+      }
+      if (commentsMap[c.pin_id].length < 10) {
+        commentsMap[c.pin_id].push(c);
+      }
+    });
+    
     // 응답 구성
     const result = {
       id: design.id,
@@ -186,7 +211,8 @@ app.get("/api/designs/:id", async (req, res) => {
         designId: p.design_id,
         x: p.x,
         y: p.y,
-        text: p.text
+        text: p.text,
+        comments: commentsMap[p.id] || []
       })),
       title: design.title,
       description: design.description,
