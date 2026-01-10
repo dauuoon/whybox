@@ -107,7 +107,6 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
   }
 
   const [detailItem, setDetailItem] = useState<any>(null)
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false)
 
   // 디자인 클릭 시 상세 정보 로드 (핀 포함)
   useEffect(() => {
@@ -117,7 +116,6 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
     }
 
     const loadDesignDetail = async () => {
-      setIsLoadingDetail(true)
       try {
         const response = await fetch(`${API_BASE_URL}/designs/${selectedItemId}`)
         if (!response.ok) throw new Error(`API Error: ${response.status}`)
@@ -128,8 +126,6 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
         // 실패 시 기존 item 사용
         const item = backendItems.find(i => i.id === selectedItemId)
         setDetailItem(item)
-      } finally {
-        setIsLoadingDetail(false)
       }
     }
 
