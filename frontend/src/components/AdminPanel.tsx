@@ -139,6 +139,30 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   const selectedDesign = selectedDesignId ? designs.find(d => d.id === selectedDesignId) : null
 
+  // 디자인 선택 시 상세 정보 로드
+  useEffect(() => {
+    if (!selectedDesignId) return
+
+    const loadDesignDetail = async () => {
+      try {
+        console.log('🔷 관리자: 디자인 상세 조회 시작:', selectedDesignId)
+        const response = await fetch(`${API_BASE_URL}/designs/${selectedDesignId}`)
+        if (!response.ok) throw new Error(`API Error: ${response.status}`)
+        const detail = await response.json()
+        
+        // 상세 정보로 업데이트 (핀 포함)
+        setDesigns(prevDesigns => prevDesigns.map(d => 
+          d.id === selectedDesignId ? detail : d
+        ))
+        console.log('✅ 관리자: 디자인 상세 조회 완료, 핀 개수:', detail.pins?.length || 0)
+      } catch (error) {
+        console.error('❌ 관리자: 디자인 상세 조회 실패:', error)
+      }
+    }
+
+    loadDesignDetail()
+  }, [selectedDesignId])
+
   // 특정 설계만 새로고침
   const refreshSingleDesign = async (designId: string | number) => {
     try {
