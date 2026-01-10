@@ -106,12 +106,40 @@ export default function ImageHistory({ onDeleteItem, onBackToUpload }: Omit<Imag
     setOpenMenuId(openMenuId === id ? null : id)
   }
 
-  const selectedItem = selectedItemId ? backendItems.find(item => item.id === selectedItemId) : null
+  const [detailItem, setDetailItem] = useState<any>(null)
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false)
 
-  if (selectedItem) {
+  // 디자인 클릭 시 상세 정보 로드 (핀 포함)
+  useEffect(() => {
+    if (!selectedItemId) {
+      setDetailItem(null)
+      return
+    }
+
+    const loadDesignDetail = async () => {
+      setIsLoadingDetail(true)
+      try {
+        const response = await fetch(`${API_BASE_URL}/designs/${selectedItemId}`)
+        if (!response.ok) throw new Error(`API Error: ${response.status}`)
+        const detail = await response.json()
+        setDetailItem(detail)
+      } catch (error) {
+        console.error('❌ 디자인 상세 조회 실패:', error)
+        // 실패 시 기존 item 사용
+        const item = backendItems.find(i => i.id === selectedItemId)
+        setDetailItem(item)
+      } finally {
+        setIsLoadingDetail(false)
+      }
+    }
+
+    loadDesignDetail()
+  }, [selectedItemId, backendItems])
+
+  if (selectedItemId && detailItem) {
     return (
       <DesignDetail
-        historyItem={selectedItem}
+        historyItem={detailItem}
         onBack={() => setSelectedItemId(null)}
       />
     )

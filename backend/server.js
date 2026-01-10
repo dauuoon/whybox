@@ -173,39 +173,6 @@ app.get("/api/designs/:id", async (req, res) => {
     
     if (pinsError) throw pinsError;
     
-    // 핀의 댓글 조회
-    const pinIds = (pins || []).map(p => p.id);
-    let comments = [];
-    if (pinIds.length > 0) {
-      const { data: commentsData, error: commentsError } = await supabase
-        .from("comments")
-        .select("id,pin_id,text,created_at")
-        .in("pin_id", pinIds)
-        .order('id', { ascending: false })
-        .limit(500);
-      if (commentsError) throw commentsError;
-      comments = commentsData || [];
-    }
-    
-    // 댓글 맵 생성
-    const commentsMap = {};
-    comments.forEach(c => {
-      if (!commentsMap[c.pin_id]) {
-        commentsMap[c.pin_id] = [];
-      }
-      commentsMap[c.pin_id].push(c);
-    });
-    
-    // 핀에 댓글 포함
-    const pinsWithComments = (pins || []).map(p => ({
-      id: p.id,
-      designId: p.design_id,
-      x: p.x,
-      y: p.y,
-      text: p.text,
-      comments: commentsMap[p.id] || []
-    }));
-    
     // 응답 구성
     const result = {
       id: design.id,
@@ -214,7 +181,13 @@ app.get("/api/designs/:id", async (req, res) => {
       notes: design.description,
       date: design.created_at ? new Date(design.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
       status: design.status || '질문생성중',
-      pins: pinsWithComments,
+      pins: (pins || []).map(p => ({
+        id: p.id,
+        designId: p.design_id,
+        x: p.x,
+        y: p.y,
+        text: p.text
+      })),
       title: design.title,
       description: design.description,
       image_url: design.image_url,
